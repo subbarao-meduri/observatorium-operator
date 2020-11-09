@@ -57,9 +57,12 @@ wait_for_cr() {
     fi
 }
 
-deploy_operator() {
+load_operator() {
     docker build -t quay.io/observatorium/observatorium-operator:latest .
     ./kind load docker-image quay.io/observatorium/observatorium-operator:latest
+}
+
+deploy_operator() {
     $KUBECTL apply -f https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/setup/prometheus-operator-0servicemonitorCustomResourceDefinition.yaml
     $KUBECTL apply -f https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/setup/prometheus-operator-0prometheusruleCustomResourceDefinition.yaml
     $KUBECTL create ns observatorium-minio || true
