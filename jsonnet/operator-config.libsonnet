@@ -28,6 +28,7 @@ cr.spec {
     hashrings: hashrings,
     objectStorageConfig: thanosObjectStorageConfig,
     replicas: if std.objectHas(cr.spec.receivers, 'replicas') then cr.spec.receivers.replicas else default.receivers.replicas,
+    replicationFactor: if std.objectHas(cr.spec.receivers, 'replicationFactor') then cr.spec.receivers.replicationFactor else 1,
     logLevel: 'info',
     debug: '',
   },
