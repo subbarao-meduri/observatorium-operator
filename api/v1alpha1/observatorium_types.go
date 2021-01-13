@@ -93,6 +93,9 @@ type ThanosReceiveControllerSpec struct {
 	Image string `json:"image,omitempty"`
 	// Version describes the version of Thanos receive controller to use.
 	Version string `json:"version,omitempty"`
+	// Compute Resources required by this container.
+	// +optional
+	Resources v1.ResourceRequirements `json:"resources,omitempty"`
 }
 
 type ReceiversSpec struct {
@@ -106,6 +109,9 @@ type ReceiversSpec struct {
 	VolumeClaimTemplate VolumeClaimTemplate `json:"volumeClaimTemplate"`
 	// ReplicationFactor defines the number of copies of every time-series
 	ReplicationFactor *int32 `json:"replicationFactor,omitempty"`
+	// Compute Resources required by this container.
+	// +optional
+	Resources v1.ResourceRequirements `json:"resources,omitempty"`
 }
 
 type StoreSpec struct {
@@ -118,6 +124,9 @@ type StoreSpec struct {
 	Shards              *int32              `json:"shards,omitempty"`
 	// Memcached spec for Store
 	Cache StoreCacheSpec `json:"cache,omitempty"`
+	// Compute Resources required by this container.
+	// +optional
+	Resources v1.ResourceRequirements `json:"resources,omitempty"`
 }
 
 // StoreCacheSpec describes configuration for Store Memcached
@@ -134,6 +143,12 @@ type StoreCacheSpec struct {
 	Replicas *int32 `json:"replicas,omitempty"`
 	// Memory limit of Memcached in megabytes.
 	MemoryLimitMB *int32 `json:"memoryLimitMb,omitempty"`
+	// Compute Resources required by this container.
+	// +optional
+	Resources v1.ResourceRequirements `json:"resources,omitempty"`
+	// Compute Resources required by this container.
+	// +optional
+	ExporterResources v1.ResourceRequirements `json:"exporterResources,omitempty"`
 }
 
 // Permission is an Observatorium RBAC permission.
@@ -248,6 +263,9 @@ type APISpec struct {
 	RBAC APIRBAC `json:"rbac"`
 	// Tenants is a slice of tenants for the Observatorium API.
 	Tenants []APITenant `json:"tenants"`
+	// Compute Resources required by this container.
+	// +optional
+	Resources v1.ResourceRequirements `json:"resources,omitempty"`
 }
 
 type QuerySpec struct {
@@ -257,6 +275,9 @@ type QuerySpec struct {
 	Replicas *int32 `json:"replicas,omitempty"`
 	// Version of Thanos image to be deployed.
 	Version string `json:"version,omitempty"`
+	// Compute Resources required by this container.
+	// +optional
+	Resources v1.ResourceRequirements `json:"resources,omitempty"`
 }
 
 type RuleConfig struct {
@@ -284,6 +305,12 @@ type RuleSpec struct {
 	// ReloaderImage is an image of configmap reloader
 	// +optional
 	ReloaderImage string `json:"reloaderImage,omitempty"`
+	// Compute Resources required by this container.
+	// +optional
+	Resources v1.ResourceRequirements `json:"resources,omitempty"`
+	// Compute Resources required by this container.
+	// +optional
+	ReloaderResources v1.ResourceRequirements `json:"reloaderResources,omitempty"`
 }
 
 type CompactSpec struct {
@@ -303,6 +330,9 @@ type CompactSpec struct {
 	RetentionResolution1h string `json:"retentionResolution1h"`
 	// EnableDownsampling enables downsampling.
 	EnableDownsampling bool `json:"enableDownsampling,omitempty"`
+	// Compute Resources required by this container.
+	// +optional
+	Resources v1.ResourceRequirements `json:"resources,omitempty"`
 }
 
 type VolumeClaimTemplate struct {
@@ -316,6 +346,9 @@ type QueryFrontendSpec struct {
 	Replicas *int32 `json:"replicas,omitempty"`
 	// Version of Query Frontend image to be deployed.
 	Version string `json:"version,omitempty"`
+	// Compute Resources required by this container.
+	// +optional
+	Resources v1.ResourceRequirements `json:"resources,omitempty"`
 }
 
 type Hashring struct {
