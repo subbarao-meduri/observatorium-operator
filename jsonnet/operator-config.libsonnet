@@ -56,8 +56,10 @@ cr.spec {
     version: if std.objectHas(cr.spec.store, 'cache') && std.objectHas(cr.spec.store.cache, 'version') then cr.spec.store.cache.version else default.storeCache.version,
     exporterImage: if std.objectHas(cr.spec.store, 'cache') && std.objectHas(cr.spec.store.cache, 'exporterImage') then cr.spec.store.cache.exporterImage else default.storeCache.exporterImage,
     exporterVersion: if std.objectHas(cr.spec.store, 'cache') && std.objectHas(cr.spec.store.cache, 'exporterVersion') then cr.spec.store.cache.exporterVersion else default.storeCache.exporterVersion,
-    resources: if std.objectHas(cr.spec.store.cache, 'resources') then cr.spec.store.cache.resources else {},
-    exporterResources: if std.objectHas(cr.spec.store.cache, 'exporterResources') then cr.spec.store.cache.exporterResources else {},
+    resources: {
+      memcached: if std.objectHas(cr.spec.store.cache, 'resources') then cr.spec.store.cache.resources else {},
+      exporter: if std.objectHas(cr.spec.store.cache, 'exporterResources') then cr.spec.store.cache.exporterResources else {},
+    },
     replicas: if std.objectHas(cr.spec.store, 'cache') && std.objectHas(cr.spec.store.cache, 'replicas') then cr.spec.store.cache.replicas else default.storeCache.replicas,
     memoryLimitMb: if std.objectHas(cr.spec.store, 'cache') && std.objectHas(cr.spec.store.cache, 'memoryLimitMb') then cr.spec.store.cache.memoryLimitMb else default.storeCache.memoryLimitMb,
   },
