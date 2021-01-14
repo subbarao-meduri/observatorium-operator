@@ -3,12 +3,14 @@ local loki = import 'github.com/observatorium/deployments/components/loki.libson
 local config = import './operator-config.libsonnet';
 local trc = import 'thanos-receive-controller/thanos-receive-controller.libsonnet';
 local api = import 'observatorium/observatorium-api.libsonnet';
+local sc = import 'github.com/observatorium/deployments/components/memcached.libsonnet';
 local obs = ((import 'github.com/observatorium/deployments/components/observatorium.libsonnet') + {
                config+:: config,
              } + (import 'github.com/observatorium/deployments/components/observatorium-configure.libsonnet'));
 
 local patchObs = obs {
   compact+::
+    t.compact.withServiceMonitor +
     t.compact.withVolumeClaimTemplate {
       config+:: obs.compact.config,
     } + (if std.objectHas(obs.compact.config, 'resources') then
@@ -20,6 +22,7 @@ local patchObs = obs {
     ),
   
   rule+::
+    t.rule.withServiceMonitor +
     t.rule.withVolumeClaimTemplate {
       config+:: obs.rule.config,
     } + (if std.objectHas(obs.rule.config, 'resources') then
@@ -45,6 +48,7 @@ local patchObs = obs {
 
   receivers+:: {
     [hashring.hashring]+:
+      t.receive.withServiceMonitor +
       t.receive.withVolumeClaimTemplate {
         config+:: obs.receivers[hashring.hashring].config,
       } + (if std.objectHas(obs.receivers[hashring.hashring].config, 'resources') then
@@ -59,6 +63,7 @@ local patchObs = obs {
 
   store+:: {
     ['shard' + i]+:
+      t.store.withServiceMonitor +
       t.store.withVolumeClaimTemplate {
         config+:: obs.store['shard' + i].config,
       } + (if std.objectHas(obs.store['shard' + i].config, 'resources') then
@@ -71,12 +76,23 @@ local patchObs = obs {
     for i in std.range(0, obs.config.store.shards - 1)
   },
 
+  storeCache+:: 
+    sc.withServiceMonitor +
+    (if (std.objectHas(obs.config.store.cache, 'resources') || std.objectHas(obs.config.store.cache, 'exporterResources')) then
+       sc.withResources {
+        config+:: {
+          resources: obs.config.storeCache.resources,
+        }
+      } else {}
+    ),
+
   loki+:: loki.withVolumeClaimTemplate {
     config+:: obs.loki.config,
   },
 
   query+:: 
     (if std.objectHas(obs.query.config, 'resources') then
+      t.query.withServiceMonitor +
       t.query.withResources {
         config+:: {
           resources: obs.query.config.resources,
@@ -94,6 +110,7 @@ local patchObs = obs {
     ),
 
   thanosReceiveController+:: 
+    trc.withServiceMonitor +
     (if std.objectHas(obs.thanosReceiveController.config, 'resources') then
        trc.withResources {
         config+:: {
@@ -103,6 +120,7 @@ local patchObs = obs {
     ),
 
   api+:: 
+    api.withServiceMonitor +
     (if std.objectHas(obs.api.config, 'resources') then
        api.withResources {
         config+:: {
@@ -112,7 +130,6 @@ local patchObs = obs {
     ),
 
 };
-std.trace('cond is true returning '+ std.toString(obs.config.name), { a: false })
 
 {
   manifests: std.mapWithKey(function(k, v) v {
@@ -200,19 +217,6 @@ std.trace('cond is true returning '+ std.toString(obs.config.name), { a: false }
         template+: {
           spec+:{
             affinity+: obs.config.affinity,
-          },
-        },
-      } else {}
-    ) + (
-      if (std.objectHas(obs.config.store.cache, 'exporterResources') && v.kind == 'StatefulSet' && v.metadata.name == obs.config.name + '-thanos-store-memcached') then {
-        template+: {
-          spec+:{
-            containers: [
-              if c.name == 'exporter' then c {
-                resources: obs.config.store.cache.exporterResources,
-              } else c
-              for c in super.containers
-            ],
           },
         },
       } else {}
