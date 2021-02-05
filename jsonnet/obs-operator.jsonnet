@@ -152,6 +152,14 @@ local patchObs = obs {
         },
       } else {}
     ) + (
+      if (std.objectHas(obs.config, 'tolerations') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
+        template+: {
+          spec+:{
+            tolerations: obs.config.tolerations,
+          },
+        },
+      } else {}
+    ) + (
       if (v.kind == 'StatefulSet' || v.kind == 'Deployment') then {
         template+: {
           spec+:{
