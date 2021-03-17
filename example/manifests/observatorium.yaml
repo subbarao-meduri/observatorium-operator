@@ -124,6 +124,9 @@ spec:
         resources:
           requests:
             storage: 50Gi
+  securityContext:
+    fsGroup: 65534
+    runAsUser: 65534
   store:
     cache:
       exporterImage: prom/memcached-exporter:v0.6.0
