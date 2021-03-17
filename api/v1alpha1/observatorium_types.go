@@ -112,6 +112,9 @@ type ReceiversSpec struct {
 	VolumeClaimTemplate VolumeClaimTemplate `json:"volumeClaimTemplate"`
 	// ReplicationFactor defines the number of copies of every time-series
 	ReplicationFactor *int32 `json:"replicationFactor,omitempty"`
+	// Compute Resources required by this container.
+	// +optional
+	Resources v1.ResourceRequirements `json:"resources,omitempty"`
 }
 
 type StoreSpec struct {
@@ -305,6 +308,12 @@ type RuleSpec struct {
 	// ReloaderImage is an image of configmap reloader
 	// +optional
 	ReloaderImage string `json:"reloaderImage,omitempty"`
+	// Compute Resources required by this container.
+	// +optional
+	Resources v1.ResourceRequirements `json:"resources,omitempty"`
+	// Compute Resources required by this container.
+	// +optional
+	ReloaderResources v1.ResourceRequirements `json:"reloaderResources,omitempty"`
 }
 
 type CompactSpec struct {
