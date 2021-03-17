@@ -51,7 +51,7 @@ type ObservatoriumSpec struct {
 	// Affinity causes all components to be scheduled on nodes with matching rules.
 	// +optional
 	Affinity *v1.Affinity `json:"affinity,omitempty"`
-	// Tolerations causes all components to tolerate any taints.
+	// Tolerations causes all components to tolerate specified taints.
 	// +optional
 	Tolerations []v1.Toleration `json:"tolerations,omitempty"`
 }
@@ -112,9 +112,6 @@ type ReceiversSpec struct {
 	VolumeClaimTemplate VolumeClaimTemplate `json:"volumeClaimTemplate"`
 	// ReplicationFactor defines the number of copies of every time-series
 	ReplicationFactor *int32 `json:"replicationFactor,omitempty"`
-	// Compute Resources required by this container.
-	// +optional
-	Resources v1.ResourceRequirements `json:"resources,omitempty"`
 }
 
 type StoreSpec struct {
@@ -308,12 +305,6 @@ type RuleSpec struct {
 	// ReloaderImage is an image of configmap reloader
 	// +optional
 	ReloaderImage string `json:"reloaderImage,omitempty"`
-	// Compute Resources required by this container.
-	// +optional
-	Resources v1.ResourceRequirements `json:"resources,omitempty"`
-	// Compute Resources required by this container.
-	// +optional
-	ReloaderResources v1.ResourceRequirements `json:"reloaderResources,omitempty"`
 }
 
 type CompactSpec struct {
