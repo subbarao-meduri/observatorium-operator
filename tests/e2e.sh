@@ -5,6 +5,7 @@ set -o pipefail
 
 ARTIFACT_DIR="${ARTIFACT_DIR:-/tmp/artifacts}"
 KUBECTL="${KUBECTL:-./kubectl}"
+KIND="${KIND:-./kind}"
 OS_TYPE=$(echo `uname -s` | tr '[:upper:]' '[:lower:]')
 
 SED_CMD="${SED_CMD:-sed}"
@@ -21,10 +22,14 @@ kind() {
 
 dex() {
     $KUBECTL create ns dex || true
+    $KUBECTL apply -f jsonnet/vendor/github.com/observatorium/deployments/tests/manifests/observatorium-xyz-tls-dex.yaml
     $KUBECTL apply -f jsonnet/vendor/github.com/observatorium/deployments/environments/dev/manifests/dex-secret.yaml
     $KUBECTL apply -f jsonnet/vendor/github.com/observatorium/deployments/environments/dev/manifests/dex-pvc.yaml
     $KUBECTL apply -f jsonnet/vendor/github.com/observatorium/deployments/environments/dev/manifests/dex-deployment.yaml
     $KUBECTL apply -f jsonnet/vendor/github.com/observatorium/deployments/environments/dev/manifests/dex-service.yaml
+    # service CA for the first tenant, "test"
+    $KUBECTL apply -f jsonnet/vendor/github.com/observatorium/deployments/tests/manifests/test-ca-tls.yaml
+
     # Observatorium needs the Dex API to be ready for authentication to work and thus for the tests to pass.
     $KUBECTL wait --for=condition=available --timeout=10m -n dex deploy/dex || (must_gather "$ARTIFACT_DIR" && exit 1)
 }

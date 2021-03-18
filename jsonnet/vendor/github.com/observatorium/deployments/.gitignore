@@ -2,4 +2,5 @@
 /kubectl
 /vendor
 tmp/
-/jsonnetfile.lock.json
+
+.idea

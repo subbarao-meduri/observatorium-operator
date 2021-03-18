@@ -1,4 +1,5 @@
 SHELL=/usr/bin/env bash -o pipefail
+include .bingo/Variables.mk
 
 VERSION := $(strip $(shell [ -d .git ] && git describe --always --tags --dirty))
 BUILD_DATE := $(shell date -u +"%Y-%m-%d")
@@ -8,9 +9,7 @@ VCS_REF := $(strip $(shell [ -d .git ] && git rev-parse --short HEAD))
 DOCKER_REPO ?= quay.io/observatorium/observatorium-operator
 
 BIN_DIR ?= $(shell pwd)/tmp/bin
-
 CONTROLLER_GEN ?= $(BIN_DIR)/controller-gen
-JB ?= $(BIN_DIR)/jb
 
 # Generate manifests e.g. CRD, RBAC etc.
 manifests: example/manifests/observatorium.yaml manifests/crds/core.observatorium.io_observatoria.yaml
@@ -19,7 +18,7 @@ manifests/crds/core.observatorium.io_observatoria.yaml: $(CONTROLLER_GEN) $(find
 	$(CONTROLLER_GEN) crd paths="./..." output:crd:artifacts:config=manifests/crds
 
 example/manifests/observatorium.yaml: example/main.jsonnet
-	jsonnet -J jsonnet/vendor example/main.jsonnet | gojsontoyaml > example/manifests/observatorium.yaml
+	$(JSONNET) -J jsonnet/vendor example/main.jsonnet | $(GOJSONTOYAML) > example/manifests/observatorium.yaml
 
 # Run go fmt against code
 fmt:
@@ -50,7 +49,7 @@ container-push: container-build
 	docker push $(DOCKER_REPO):$(VCS_BRANCH)-$(BUILD_DATE)-$(VERSION)
 	docker push $(DOCKER_REPO):latest
 
-vendor-jsonnet: $(JB)
+jsonnet-vendor: $(JB)
 	cd jsonnet; $(JB) install
 
 jsonnet-update: $(JB)
@@ -59,14 +58,16 @@ jsonnet-update: $(JB)
 jsonnet-update-deployments: $(JB)
 	cd jsonnet; $(JB) update github.com/observatorium/deployments
 
+JSONNET_SRC = $(shell find . -type f -not -path './*vendor/*' \( -name '*.libsonnet' -o -name '*.jsonnet' \))
+JSONNETFMT_CMD := $(JSONNETFMT) -n 2 --max-blank-lines 2 --string-style s --comment-style s
+
+.PHONY: jsonnet-fmt
+jsonnet-fmt: | $(JSONNETFMT)
+	PATH=$$PATH:$(BIN_DIR):$(FIRST_GOPATH)/bin echo ${JSONNET_SRC} | xargs -n 1 -- $(JSONNETFMT_CMD) -i
+
+# Tools
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
 $(CONTROLLER_GEN): $(BIN_DIR)
 	GO111MODULE="on" go build -o $@ sigs.k8s.io/controller-tools/cmd/controller-gen
-
-$(JB): $(BIN_DIR)
-	go get github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb
-	GO111MODULE="on" go build -o $@ github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb
-
-JSONNET_SRC = $(shell find . -type f -not -path './*vendor/*' \( -name '*.libsonnet' -o -name '*.jsonnet' \))

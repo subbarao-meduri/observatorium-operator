@@ -1,161 +1,110 @@
-local t = (import 'github.com/open-cluster-management/kube-thanos/jsonnet/kube-thanos/thanos.libsonnet');
-local loki = import 'github.com/observatorium/deployments/components/loki.libsonnet';
-local config = import './operator-config.libsonnet';
-local trc = import 'thanos-receive-controller/thanos-receive-controller.libsonnet';
-local api = import 'observatorium/observatorium-api.libsonnet';
-local sc = import 'github.com/observatorium/deployments/components/memcached.libsonnet';
-local obs = ((import 'github.com/observatorium/deployments/components/observatorium.libsonnet') + {
-               config+:: config,
-             } + (import 'github.com/observatorium/deployments/components/observatorium-configure.libsonnet'));
+local cr = import 'generic-operator/config';
+local thanos = (import 'github.com/observatorium/deployments/components/thanos.libsonnet');
+local loki = (import 'github.com/observatorium/deployments/components/loki.libsonnet');
+local api = (import 'github.com/observatorium/observatorium/jsonnet/lib/observatorium-api.libsonnet');
+local obs = (import 'github.com/observatorium/deployments/components/observatorium.libsonnet');
 
-local patchObs = obs {
-  compact+::
-    t.compact.withServiceMonitor +
-    t.compact.withVolumeClaimTemplate {
-      config+:: obs.compact.config,
-    } + (if std.objectHas(obs.compact.config, 'resources') then
-      t.compact.withResources {
-        config+:: {
-          resources: obs.compact.config.resources,
-        }
-      } else {}
-    ),
-  
-  rule+::
-    t.rule.withServiceMonitor +
-    t.rule.withVolumeClaimTemplate {
-      config+:: obs.rule.config,
-    } + (if std.objectHas(obs.rule.config, 'resources') then
-      t.rule.withResources {
-        config+:: {
-          resources: obs.rule.config.resources,
-        }
-      } else {}
-    ) + (if std.objectHas(obs.rule.config, 'alertmanagersURL') then 
-      t.rule.withAlertmanagers {
-        config+:: {
-          alertmanagersURL: obs.rule.config.alertmanagersURL,
-        }
-      } else {}
-    ) + (if std.objectHas(obs.rule.config, 'rulesConfig') then 
-      t.rule.withRules {
-        config+:: {
-          rulesConfig: obs.rule.config.rulesConfig,
-          reloaderImage: obs.rule.config.reloaderImage,
-        }
-      } else {}
-    ),
+local operatorObs = obs {
 
-  receivers+:: {
-    [hashring.hashring]+:
-      t.receive.withServiceMonitor +
-      t.receive.withVolumeClaimTemplate {
-        config+:: obs.receivers[hashring.hashring].config,
-      } + (if std.objectHas(obs.receivers[hashring.hashring].config, 'resources') then
-        t.receive.withResources {
-          config+:: {
-            resources: obs.receivers[hashring.hashring].config.resources,
-          }
+  thanos+:: thanos({
+    name: cr.metadata.name,
+    namespace: cr.metadata.namespace,
+    hashrings: cr.spec.hashrings,
+    objectStorageConfig: cr.spec.objectStorageConfig.thanos,
+    compact+:: {
+      logLevel: 'info',
+      disableDownsampling: if std.objectHas(cr.spec, 'compact') && std.objectHas(cr.spec.compact, 'enableDownsampling') then !cr.spec.compact.enableDownsampling else obs.thanos.compact.config.disableDownsampling,
+      securityContext: if std.objectHas(cr.spec, 'securityContext') then cr.spec.securityContext else obs.thanos.compact.config.securityContext,
+    } + if std.objectHas(cr.spec, 'compact') then cr.spec.compact else {},
+
+    receiveController+:: {
+      hashrings: cr.spec.hashrings,
+      securityContext: if std.objectHas(cr.spec, 'securityContext') then cr.spec.securityContext else obs.thanos.receiveController.config.securityContext,
+    } + if std.objectHas(cr.spec, 'thanosReceiveController') then cr.spec.thanosReceiveController else {},
+
+    receivers+:: {
+      securityContext: if std.objectHas(cr.spec, 'securityContext') then cr.spec.securityContext else obs.thanos.receivers.config.securityContext,
+    } + if std.objectHas(cr.spec, 'receivers') then cr.spec.receivers else {},
+
+    rule+:: {
+      securityContext: if std.objectHas(cr.spec, 'securityContext') then cr.spec.securityContext else obs.thanos.rule.config.securityContext,
+    } + if std.objectHas(cr.spec, 'rule') then cr.spec.rule else {},
+
+    stores+:: {
+      securityContext: if std.objectHas(cr.spec, 'securityContext') then cr.spec.securityContext else obs.thanos.stores.config.securityContext,
+    } + if std.objectHas(cr.spec, 'store') then cr.spec.store else {},
+
+    storeCache+:: (if std.objectHas(cr.spec, 'store') && std.objectHas(cr.spec.store, 'cache') then cr.spec.store.cache else {}) + {
+      memoryLimitMb: if std.objectHas(cr.spec.store, 'cache') && std.objectHas(cr.spec.store.cache, 'memoryLimitMb') then cr.spec.store.cache.memoryLimitMb else obs.thanos.storeCache.config.memoryLimitMb,
+      resources+: (
+        if std.objectHas(cr.spec.store.cache, 'resources') then {
+          memcached: cr.spec.store.cache.resources
         } else {}
-      )
-    for hashring in obs.config.hashrings
-  },
-
-  store+:: {
-    ['shard' + i]+:
-      t.store.withServiceMonitor +
-      t.store.withVolumeClaimTemplate {
-        config+:: obs.store['shard' + i].config,
-      } + (if std.objectHas(obs.store['shard' + i].config, 'resources') then
-        t.store.withResources {
-          config+:: {
-            resources: obs.store['shard' + i].config.resources,
-          }
+      ) + (
+        if std.objectHas(cr.spec.store.cache, 'exporterResources') then {
+          exporter: cr.spec.store.cache.exporterResources
         } else {}
-      )
-    for i in std.range(0, obs.config.store.shards - 1)
-  },
+      ),
+      securityContext: if std.objectHas(cr.spec, 'securityContext') then cr.spec.securityContext else obs.thanos.storeCache.config.securityContext,
+    },
 
-  storeCache+:: 
-    sc.withServiceMonitor +
-    (if (std.objectHas(obs.config.store.cache, 'resources') || std.objectHas(obs.config.store.cache, 'exporterResources')) then
-       sc.withResources {
-        config+:: {
-          resources: obs.config.storeCache.resources,
-        }
-      } else {}
-    ),
+    query+:: {
+      securityContext: if std.objectHas(cr.spec, 'securityContext') then cr.spec.securityContext else obs.thanos.query.config.securityContext,
+    } + if std.objectHas(cr.spec, 'query') then cr.spec.query else {},
 
-  loki+:: loki.withVolumeClaimTemplate {
-    config+:: obs.loki.config,
-  },
+    queryFrontend+:: {
+      securityContext: if std.objectHas(cr.spec, 'securityContext') then cr.spec.securityContext else obs.thanos.queryFrontend.config.securityContext,
+    } + if std.objectHas(cr.spec, 'queryFrontend') then cr.spec.queryFrontend else {},
 
-  query+:: 
-    (if std.objectHas(obs.query.config, 'resources') then
-      t.query.withServiceMonitor +
-      t.query.withResources {
-        config+:: {
-          resources: obs.query.config.resources,
-        }
-      } else {}
-    ),
+    queryFrontendCache+:: {
+      securityContext: if std.objectHas(cr.spec, 'securityContext') then cr.spec.securityContext else obs.thanos.queryFrontendCache.config.securityContext,
+    }
+  }),
 
-  queryFrontend+:: 
-    (if std.objectHas(obs.queryFrontend.config, 'resources') then
-      t.queryFrontend.withResources {
-        config+:: {
-          resources: obs.queryFrontend.config.resources,
-        }
-      } else {}
-    ),
+  loki:: if std.objectHas(cr.spec, 'loki') then loki(obs.loki.config {
+      local cfg = self,
+      name: cr.metadata.name + '-' + cfg.commonLabels['app.kubernetes.io/name'],
+      namespace: cr.metadata.namespace,
+      image: if std.objectHas(cr.spec.loki, 'image') then cr.spec.loki.image else obs.loki.config.image,
+      replicas: if std.objectHas(cr.spec.loki, 'replicas') then cr.spec.loki.replicas else obs.loki.config.replicas,
+      version: if std.objectHas(cr.spec.loki, 'version') then cr.spec.loki.version else obs.loki.config.version,
+      objectStorageConfig: if cr.spec.objectStorageConfig.loki != null then cr.spec.objectStorageConfig.loki else obs.loki.config.objectStorageConfig,
+    }) else {},
 
-  thanosReceiveController+:: 
-    trc.withServiceMonitor +
-    (if std.objectHas(obs.thanosReceiveController.config, 'resources') then
-       trc.withResources {
-        config+:: {
-          resources: obs.thanosReceiveController.config.resources,
-        }
-      } else {}
-    ),
+  gubernator:: {},
 
-  api+:: 
-    api.withServiceMonitor +
-    (if std.objectHas(obs.api.config, 'resources') then
-       api.withResources {
-        config+:: {
-          resources: obs.api.config.resources,
-        }
-      } else {}
-    ),
-
+  api:: api(obs.api.config {
+    local cfg = self,
+    name: cr.metadata.name + '-' + cfg.commonLabels['app.kubernetes.io/name'],
+    namespace: cr.metadata.namespace,
+    image: if std.objectHas(cr.spec, 'api') && std.objectHas(cr.spec.api, 'image') then cr.spec.api.image else obs.api.config.image,
+    version: if std.objectHas(cr.spec, 'api') && std.objectHas(cr.spec.api, 'version') then cr.spec.api.version else obs.api.config.version,
+    replicas: if std.objectHas(cr.spec, 'api') && std.objectHas(cr.spec.api, 'replicas') then cr.spec.api.replicas else obs.api.config.replicas,
+    resources: if std.objectHas(cr.spec.api, 'resources') then cr.spec.api.resources else obs.api.config.resources,
+    tls: if std.objectHas(cr.spec, 'api') && std.objectHas(cr.spec.api, 'tls') then cr.spec.api.tls else obs.api.config.tls,
+    rbac: if std.objectHas(cr.spec, 'api') && std.objectHas(cr.spec.api, 'rbac') then cr.spec.api.rbac else obs.api.config.rbac,
+    tenants: if std.objectHas(cr.spec, 'api') && std.objectHas(cr.spec.api, 'tenants') then { tenants: cr.spec.api.tenants } else obs.api.config.tenants,
+    rateLimiter: {},
+  }),
 };
 
 {
   manifests: std.mapWithKey(function(k, v) v {
     metadata+: {
       ownerReferences: [{
-        apiVersion: config.apiVersion,
+        apiVersion: cr.apiVersion,
+        kind: cr.kind,
+        name: cr.metadata.name,
+        uid: cr.metadata.uid,
         blockOwnerdeletion: true,
         controller: true,
-        kind: config.kind,
-        name: config.name,
-        uid: config.uid,
       }],
     },
     spec+: (
       if (std.objectHas(obs.config, 'nodeSelector') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
         template+: {
-          spec+:{
+          spec+: {
             nodeSelector: obs.config.nodeSelector,
-          },
-        },
-      } else {}
-    ) + (
-      if (std.objectHas(obs.config, 'tolerations') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
-        template+: {
-          spec+:{
-            tolerations: obs.config.tolerations,
           },
         },
       } else {}
@@ -223,18 +172,26 @@ local patchObs = obs {
     ) + (
       if (std.objectHas(obs.config, 'affinity') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
         template+: {
-          spec+:{
+          spec+: {
             affinity+: obs.config.affinity,
           },
         },
       } else {}
     ) + (
-      if (std.objectHas(obs.config.rule, 'reloaderResources') && (v.kind == 'StatefulSet') && v.metadata.name == obs.config.name + '-thanos-rule') then {
+      if (std.objectHas(obs.config, 'tolerations') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
+        template+: {
+          spec+:{
+            tolerations: obs.config.tolerations,
+          },
+        },
+      } else {}
+    ) + (
+      if (std.objectHas(cr.spec.rule, 'reloaderResources') && (v.kind == 'StatefulSet') && v.metadata.name == obs.config.name + '-thanos-rule') then {
         template+: {
           spec+:{
             containers: [
               if c.name == 'configmap-reloader' then c {
-                resources: obs.config.rule.reloaderResources,
+                resources: cr.spec.rule.reloaderResources,
               } else c
               for c in super.containers
             ],
@@ -242,5 +199,5 @@ local patchObs = obs {
         },
       } else {}
     ),
-  }, patchObs.manifests),
+  }, operatorObs.manifests),
 }

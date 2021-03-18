@@ -1,11 +1,11 @@
 jobs:
   build:
-    working_directory: /go/src/github.com/observatorium/deployments
+    working_directory: /go/src/github.com/observatorium/operator
     docker:
       - image: quay.io/coreos/jsonnet-ci
     steps:
       - checkout
-      - run: make vendor-jsonnet
+      - run: make jsonnet-vendor
       - run: make generate manifests
       - run: git diff --exit-code
 
@@ -25,10 +25,10 @@ jobs:
           path: /tmp/artifacts
 
   container-push:
-    machine: true
+    machine:
+      image: ubuntu-1604:201903-01
     steps:
       - checkout
-      - run: make vendor-jsonnet
       - run: |
           echo "$DOCKER_PASS" | docker login quay.io --username $DOCKER_USER --password-stdin
           make container-push
