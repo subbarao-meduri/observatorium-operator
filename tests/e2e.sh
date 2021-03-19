@@ -86,7 +86,8 @@ deploy_operator() {
     $KUBECTL apply -n observatorium -f jsonnet/vendor/github.com/observatorium/deployments/tests/manifests/observatorium-xyz-tls-configmap.yaml
     $KUBECTL apply -n observatorium -f jsonnet/vendor/github.com/observatorium/deployments/tests/manifests/observatorium-xyz-tls-secret.yaml
     $KUBECTL apply -f manifests/crds
-    $SED_CMD -e "s,quay.io/observatorium/observatorium-operator,$OPERATOR_IMAGE_NAME," manifests/operator.yaml 
+    $SED_CMD -i "s,quay.io/observatorium/observatorium-operator:latest,$OPERATOR_IMAGE_NAME," manifests/operator.yaml
+    cat manifests/operator.yaml
     $KUBECTL apply -n default -f manifests/
     $KUBECTL apply -n observatorium -f example/manifests
     wait_for_cr observatorium-xyz
