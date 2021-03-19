@@ -9,8 +9,8 @@ local operatorObs = obs {
   thanos+:: thanos({
     name: cr.metadata.name,
     namespace: cr.metadata.namespace,
-    hashrings: cr.spec.hashrings,
     objectStorageConfig: cr.spec.objectStorageConfig.thanos,
+    hashrings: cr.spec.hashrings,
     compact+:: {
       logLevel: 'info',
       disableDownsampling: if std.objectHas(cr.spec, 'compact') && std.objectHas(cr.spec.compact, 'enableDownsampling') then !cr.spec.compact.enableDownsampling else obs.thanos.compact.config.disableDownsampling,
