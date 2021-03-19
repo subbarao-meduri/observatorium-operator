@@ -171,8 +171,6 @@ local dex = (import 'github.com/observatorium/deployments/components/dex.libsonn
       volumeClaimTemplate: obs.loki.config.volumeClaimTemplate,
     },
     securityContext: {
-      fsGroup: 65534,
-      runAsUser: 65534,
     }
   },
 }
