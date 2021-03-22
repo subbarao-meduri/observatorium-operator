@@ -49,32 +49,38 @@ local api = (import 'observatorium/observatorium-api.libsonnet');
     replicas: 1,
     commonLabels+:: obs.config.commonLabels,
     metrics: {
-      readEndpoint: 'http://%s.$(NAMESPACE).svc.cluster.local:%d' % [
+      readEndpoint: 'http://%s.%s.svc.cluster.local:%d' % [
         obs.thanos.queryFrontend.service.metadata.name,
+        obs.thanos.queryFrontend.service.metadata.namespace,
         obs.thanos.queryFrontend.service.spec.ports[0].port,
       ],
-      writeEndpoint: 'http://%s.$(NAMESPACE).svc.cluster.local:%d' % [
+      writeEndpoint: 'http://%s.%s.svc.cluster.local:%d' % [
         obs.thanos.receiversService.metadata.name,
+        obs.thanos.receiversService.metadata.namespace,
         obs.thanos.receiversService.spec.ports[2].port,
       ],
     },
     logs: {
-      readEndpoint: 'http://%s.$(NAMESPACE).svc.cluster.local:%d' % [
+      readEndpoint: 'http://%s.%s.svc.cluster.local:%d' % [
         obs.loki.manifests['query-frontend-http-service'].metadata.name,
+        obs.loki.manifests['query-frontend-http-service'].metadata.namespace,
         obs.loki.manifests['query-frontend-http-service'].spec.ports[0].port,
       ],
-      tailEndpoint: 'http://%s.$(NAMESPACE).svc.cluster.local:%d' % [
+      tailEndpoint: 'http://%s.%s.svc.cluster.local:%d' % [
         obs.loki.manifests['querier-http-service'].metadata.name,
+        obs.loki.manifests['querier-http-service'].metadata.namespace,
         obs.loki.manifests['querier-http-service'].spec.ports[0].port,
       ],
-      writeEndpoint: 'http://%s.$(NAMESPACE).svc.cluster.local:%d' % [
+      writeEndpoint: 'http://%s.%s.svc.cluster.local:%d' % [
         obs.loki.manifests['distributor-http-service'].metadata.name,
+        obs.loki.manifests['distributor-http-service'].metadata.namespace,
         obs.loki.manifests['distributor-http-service'].spec.ports[0].port,
       ],
     },
     rateLimiter: {
-      grpcAddress: '%s.$(NAMESPACE).svc.cluster.local:%d' % [
+      grpcAddress: '%s.%s.svc.cluster.local:%d' % [
         obs.gubernator.service.metadata.name,
+        obs.gubernator.service.metadata.namespace,
         obs.gubernator.config.ports.grpc,
       ],
     },
