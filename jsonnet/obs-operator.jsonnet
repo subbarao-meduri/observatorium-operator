@@ -126,10 +126,10 @@ local operatorObs = obs {
       }],
     },
     spec+: (
-      if (std.objectHas(obs.config, 'nodeSelector') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
+      if (std.objectHas(cr.spec, 'nodeSelector') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
         template+: {
           spec+: {
-            nodeSelector: obs.config.nodeSelector,
+            nodeSelector: cr.spec.nodeSelector,
           },
         },
       } else {}
@@ -195,18 +195,18 @@ local operatorObs = obs {
         },
       } else {}
     ) + (
-      if (std.objectHas(obs.config, 'affinity') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
+      if (std.objectHas(cr.spec, 'affinity') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
         template+: {
           spec+: {
-            affinity+: obs.config.affinity,
+            affinity+: cr.spec.affinity,
           },
         },
       } else {}
     ) + (
-      if (std.objectHas(obs.config, 'tolerations') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
+      if (std.objectHas(cr.spec, 'tolerations') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
         template+: {
           spec+:{
-            tolerations: obs.config.tolerations,
+            tolerations: cr.spec.tolerations,
           },
         },
       } else {}
