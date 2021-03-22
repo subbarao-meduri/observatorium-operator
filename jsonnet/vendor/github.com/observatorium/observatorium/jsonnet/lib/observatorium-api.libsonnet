@@ -180,10 +180,6 @@ function(params) {
                   )
                 else []
               ),
-              env: [
-                { name: 'NAME', valueFrom: { fieldRef: { fieldPath: 'metadata.name' } } },
-                { name: 'NAMESPACE', valueFrom: { fieldRef: { fieldPath: 'metadata.namespace' } } },
-              ],
               ports: [
                 { name: name, containerPort: api.config.ports[name] }
                 for name in std.objectFields(api.config.ports)
