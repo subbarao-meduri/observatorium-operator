@@ -26,22 +26,10 @@ type ObservatoriumSpec struct {
 	ObjectStorageConfig ObjectStorageConfig `json:"objectStorageConfig"`
 	// Hashrings describes a list of Hashrings
 	Hashrings []*Hashring `json:"hashrings"`
-	// Thanos CompactSpec
-	Compact CompactSpec `json:"compact"`
-	// Thanos Receive Controller Spec
-	ThanosReceiveController ThanosReceiveControllerSpec `json:"thanosReceiveController,omitempty"`
-	// Thanos ThanosPersistentSpec
-	Receivers ReceiversSpec `json:"receivers"`
-	// Thanos QueryFrontend
-	QueryFrontend QueryFrontendSpec `json:"queryFrontend,omitempty"`
-	// Thanos StoreSpec
-	Store StoreSpec `json:"store"`
-	// Thanos RulerSpec
-	Rule RuleSpec `json:"rule"`
+	// Thanos Spec
+	Thanos ThanosSpec `json:"thanos"`
 	// API
 	API APISpec `json:"api,omitempty"`
-	// Query
-	Query QuerySpec `json:"query,omitempty"`
 	// Loki
 	// +optional
 	Loki *LokiSpec `json:"loki,omitempty"`
@@ -57,6 +45,27 @@ type ObservatoriumSpec struct {
 	// Security options the pod should run with.
 	// +optional
 	SecurityContext *v1.SecurityContext `json:"securityContext,omitempty"`
+}
+
+type ThanosSpec struct {
+	// Thanos image
+	Image string `json:"image,omitempty"`
+	// Version of Thanos image to be deployed.
+	Version string `json:"version,omitempty"`
+	// Thanos CompactSpec
+	Compact CompactSpec `json:"compact"`
+	// Thanos Receive Controller Spec
+	ReceiveController ReceiveControllerSpec `json:"receiveController,omitempty"`
+	// Thanos ThanosPersistentSpec
+	Receivers ReceiversSpec `json:"receivers"`
+	// Thanos QueryFrontend
+	QueryFrontend QueryFrontendSpec `json:"queryFrontend,omitempty"`
+	// Thanos StoreSpec
+	Store StoreSpec `json:"store"`
+	// Thanos RulerSpec
+	Rule RuleSpec `json:"rule"`
+	// Query
+	Query QuerySpec `json:"query,omitempty"`
 }
 
 type ObjectStorageConfig struct {
@@ -94,7 +103,7 @@ type LokiObjectStorageConfigSpec struct {
 	RegionKey string `json:"regionKey"`
 }
 
-type ThanosReceiveControllerSpec struct {
+type ReceiveControllerSpec struct {
 	// Receive Controller image
 	Image string `json:"image,omitempty"`
 	// Version describes the version of Thanos receive controller to use.
@@ -105,12 +114,8 @@ type ThanosReceiveControllerSpec struct {
 }
 
 type ReceiversSpec struct {
-	// Thanos image
-	Image string `json:"image,omitempty"`
 	// Number of Receiver replicas.
 	Replicas *int32 `json:"replicas,omitempty"`
-	// Version of Thanos image to be deployed.
-	Version string `json:"version,omitempty"`
 	// VolumeClaimTemplate
 	VolumeClaimTemplate VolumeClaimTemplate `json:"volumeClaimTemplate"`
 	// ReplicationFactor defines the number of copies of every time-series
@@ -121,10 +126,6 @@ type ReceiversSpec struct {
 }
 
 type StoreSpec struct {
-	// Thanos image
-	Image string `json:"image,omitempty"`
-	// Version of Thanos image to be deployed.
-	Version string `json:"version,omitempty"`
 	// VolumeClaimTemplate
 	VolumeClaimTemplate VolumeClaimTemplate `json:"volumeClaimTemplate"`
 	Shards              *int32              `json:"shards,omitempty"`
@@ -275,12 +276,8 @@ type APISpec struct {
 }
 
 type QuerySpec struct {
-	// Thanos image
-	Image string `json:"image,omitempty"`
 	// Number of Query replicas.
 	Replicas *int32 `json:"replicas,omitempty"`
-	// Version of Thanos image to be deployed.
-	Version string `json:"version,omitempty"`
 	// Compute Resources required by this container.
 	// +optional
 	Resources v1.ResourceRequirements `json:"resources,omitempty"`
@@ -294,12 +291,8 @@ type RuleConfig struct {
 }
 
 type RuleSpec struct {
-	// Thanos image
-	Image string `json:"image,omitempty"`
 	// Number of Rule replicas.
 	Replicas *int32 `json:"replicas,omitempty"`
-	// Version of Thanos image to be deployed.
-	Version string `json:"version,omitempty"`
 	// VolumeClaimTemplate
 	VolumeClaimTemplate VolumeClaimTemplate `json:"volumeClaimTemplate"`
 	// RulesConfig configures rules from the configmaps
@@ -320,12 +313,8 @@ type RuleSpec struct {
 }
 
 type CompactSpec struct {
-	// Thanos image
-	Image string `json:"image,omitempty"`
 	// Number of Compact replicas.
 	Replicas *int32 `json:"replicas,omitempty"`
-	// Version of Thanos image to be deployed.
-	Version string `json:"version,omitempty"`
 	// VolumeClaimTemplate
 	VolumeClaimTemplate VolumeClaimTemplate `json:"volumeClaimTemplate"`
 	// RetentionResolutionRaw
@@ -346,12 +335,8 @@ type VolumeClaimTemplate struct {
 }
 
 type QueryFrontendSpec struct {
-	// Thanos Query Frontend image
-	Image string `json:"image,omitempty"`
 	// Number of Query Frontend replicas.
 	Replicas *int32 `json:"replicas,omitempty"`
-	// Version of Query Frontend image to be deployed.
-	Version string `json:"version,omitempty"`
 	// Compute Resources required by this container.
 	// +optional
 	Resources v1.ResourceRequirements `json:"resources,omitempty"`

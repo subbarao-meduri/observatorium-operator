@@ -52,51 +52,45 @@ local dex = (import 'github.com/observatorium/deployments/components/dex.libsonn
     },
     hashrings: obs.thanos.config.hashrings,
 
-    queryFrontend: {
-      image: obs.thanos.config.image,
-      version: obs.thanos.config.version,
-      replicas: obs.thanos.queryFrontend.config.replicas,
-    },
-    store: {
-      image: obs.thanos.config.image,
-      version: obs.thanos.config.version,
-      shards: obs.thanos.stores.config.shards,
-      cache: {
-        image: obs.thanos.storeCache.config.image,
-        version: obs.thanos.storeCache.config.version,
-        exporterImage: obs.thanos.storeCache.config.exporterImage,
-        exporterVersion: obs.thanos.storeCache.config.exporterVersion,
-        replicas: obs.thanos.storeCache.config.replicas,
-        memoryLimitMb: obs.thanos.storeCache.config.memoryLimitMb,
+    thanos: {
+      image: 'quay.io/thanos/thanos:v0.18.0',
+      version: 'v0.18.0',
+      queryFrontend: {
+        replicas: obs.thanos.queryFrontend.config.replicas,
       },
-      volumeClaimTemplate: obs.thanos.stores.config.volumeClaimTemplate,
+      store: {
+        shards: obs.thanos.stores.config.shards,
+        cache: {
+          image: obs.thanos.storeCache.config.image,
+          version: obs.thanos.storeCache.config.version,
+          exporterImage: obs.thanos.storeCache.config.exporterImage,
+          exporterVersion: obs.thanos.storeCache.config.exporterVersion,
+          replicas: obs.thanos.storeCache.config.replicas,
+          memoryLimitMb: obs.thanos.storeCache.config.memoryLimitMb,
+        },
+        volumeClaimTemplate: obs.thanos.stores.config.volumeClaimTemplate,
+      },
+      compact: {
+        volumeClaimTemplate: obs.thanos.compact.config.volumeClaimTemplate,
+        retentionResolutionRaw: obs.thanos.compact.config.retentionResolutionRaw,
+        retentionResolution5m: obs.thanos.compact.config.retentionResolution5m,
+        retentionResolution1h: obs.thanos.compact.config.retentionResolution1h,
+        enableDownsampling: !obs.thanos.compact.config.disableDownsampling,
+        replicas: obs.thanos.compact.config.replicas,
+      },
+      rule: {
+        volumeClaimTemplate: obs.thanos.rule.config.volumeClaimTemplate,
+        replicas: obs.thanos.rule.config.replicas,
+      },
+      receivers: {
+        volumeClaimTemplate: obs.thanos.receivers.config.volumeClaimTemplate,
+        replicas: obs.thanos.receivers.config.replicas,
+      },
+      query: {
+        replicas: obs.thanos.query.config.replicas,
+      },
     },
-    compact: {
-      image: obs.thanos.config.image,
-      version: obs.thanos.config.version,
-      volumeClaimTemplate: obs.thanos.compact.config.volumeClaimTemplate,
-      retentionResolutionRaw: obs.thanos.compact.config.retentionResolutionRaw,
-      retentionResolution5m: obs.thanos.compact.config.retentionResolution5m,
-      retentionResolution1h: obs.thanos.compact.config.retentionResolution1h,
-      enableDownsampling: !obs.thanos.compact.config.disableDownsampling,
-      replicas: obs.thanos.compact.config.replicas,
-    },
-    rule: {
-      image: obs.thanos.config.image,
-      version: obs.thanos.config.version,
-      volumeClaimTemplate: obs.thanos.rule.config.volumeClaimTemplate,
-      replicas: obs.thanos.rule.config.replicas,
-    },
-    receivers: {
-      image: obs.thanos.config.image,
-      version: obs.thanos.config.version,
-      volumeClaimTemplate: obs.thanos.receivers.config.volumeClaimTemplate,
-      replicas: obs.thanos.receivers.config.replicas,
-    },
-    thanosReceiveController: {
-      image: obs.thanos.receiveController.config.image,
-      version: obs.thanos.receiveController.config.version,
-    },
+
     api: {
       image: obs.api.config.image,
       replicas: obs.api.config.replicas,
@@ -153,16 +147,6 @@ local dex = (import 'github.com/observatorium/deployments/components/dex.libsonn
         configMapName: obs.config.name + '-tls',
         caKey: 'ca.pem',
       },
-    },
-    // TODO(kakkoyun): This should be removed.
-    apiQuery: {
-      image: obs.thanos.config.image,
-      version: obs.thanos.config.version,
-    },
-    query: {
-      image: obs.thanos.config.image,
-      version: obs.thanos.config.version,
-      replicas: obs.thanos.query.config.replicas,
     },
     loki: {
       image: obs.loki.config.image,
