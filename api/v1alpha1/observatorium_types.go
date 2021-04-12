@@ -113,6 +113,9 @@ type ReceiveControllerSpec struct {
 	// Compute Resources required by this container.
 	// +optional
 	Resources v1.ResourceRequirements `json:"resources,omitempty"`
+	// ServiceMonitor enables servicemonitor.
+	// +optional
+	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
 }
 
 type ReceiversSpec struct {
@@ -125,6 +128,9 @@ type ReceiversSpec struct {
 	// Compute Resources required by this container.
 	// +optional
 	Resources v1.ResourceRequirements `json:"resources,omitempty"`
+	// ServiceMonitor enables servicemonitor.
+	// +optional
+	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
 }
 
 type StoreSpec struct {
@@ -136,6 +142,9 @@ type StoreSpec struct {
 	// Compute Resources required by this container.
 	// +optional
 	Resources v1.ResourceRequirements `json:"resources,omitempty"`
+	// ServiceMonitor enables servicemonitor.
+	// +optional
+	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
 }
 
 // StoreCacheSpec describes configuration for Store Memcached
@@ -158,6 +167,9 @@ type StoreCacheSpec struct {
 	// Compute Resources required by this container.
 	// +optional
 	ExporterResources v1.ResourceRequirements `json:"exporterResources,omitempty"`
+	// ServiceMonitor enables servicemonitor.
+	// +optional
+	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
 }
 
 // Permission is an Observatorium RBAC permission.
@@ -278,6 +290,9 @@ type APISpec struct {
 	// Compute Resources required by this container.
 	// +optional
 	Resources v1.ResourceRequirements `json:"resources,omitempty"`
+	// ServiceMonitor enables servicemonitor.
+	// +optional
+	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
 }
 
 type QuerySpec struct {
@@ -286,6 +301,9 @@ type QuerySpec struct {
 	// Compute Resources required by this container.
 	// +optional
 	Resources v1.ResourceRequirements `json:"resources,omitempty"`
+	// ServiceMonitor enables servicemonitor.
+	// +optional
+	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
 }
 
 type RuleConfig struct {
@@ -315,6 +333,9 @@ type RuleSpec struct {
 	// Compute Resources required by this container.
 	// +optional
 	ReloaderResources v1.ResourceRequirements `json:"reloaderResources,omitempty"`
+	// ServiceMonitor enables servicemonitor.
+	// +optional
+	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
 }
 
 type CompactSpec struct {
@@ -333,6 +354,9 @@ type CompactSpec struct {
 	// Compute Resources required by this container.
 	// +optional
 	Resources v1.ResourceRequirements `json:"resources,omitempty"`
+	// ServiceMonitor enables servicemonitor.
+	// +optional
+	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
 }
 
 type VolumeClaimTemplate struct {
@@ -345,6 +369,9 @@ type QueryFrontendSpec struct {
 	// Compute Resources required by this container.
 	// +optional
 	Resources v1.ResourceRequirements `json:"resources,omitempty"`
+	// ServiceMonitor enables servicemonitor.
+	// +optional
+	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
 }
 
 type Hashring struct {
