@@ -11,6 +11,7 @@ local defaults = {
   replicaLabels: error 'must provide replicaLabels',
   stores: ['dnssrv+_grpc._tcp.thanos-store.%s.svc.cluster.local' % defaults.namespace],
   externalPrefix: '',
+  autoDownsampling: true,
   resources: {},
   queryTimeout: '',
   lookbackDelta: '',
@@ -54,6 +55,7 @@ function(params) {
   assert std.isString(tq.config.externalPrefix),
   assert std.isString(tq.config.queryTimeout),
   assert std.isBoolean(tq.config.serviceMonitor),
+  assert std.isBoolean(tq.config.autoDownsampling),
 
   service: {
     apiVersion: 'v1',
@@ -127,7 +129,22 @@ function(params) {
               { config+: { service_name: defaults.name } } + tq.config.tracing
             ),
           ] else []
+        ) + (
+          if tq.config.autoDownsampling then [
+            '--query.auto-downsampling',
+          ] else []
         ),
+      env: [
+        {
+          // Inject the host IP to make configuring tracing convenient.
+          name: 'HOST_IP_ADDRESS',
+          valueFrom: {
+            fieldRef: {
+              fieldPath: 'status.hostIP',
+            },
+          },
+        },
+      ],
       ports: [
         { name: port.name, containerPort: port.port }
         for port in tq.service.spec.ports

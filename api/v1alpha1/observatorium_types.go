@@ -131,6 +131,9 @@ type ReceiversSpec struct {
 	// ServiceMonitor enables servicemonitor.
 	// +optional
 	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
+	// How long to retain raw samples on local storage
+	// +optional
+	Retention string `json:"retention,omitempty"`
 }
 
 type StoreSpec struct {
@@ -336,6 +339,12 @@ type RuleSpec struct {
 	// ServiceMonitor enables servicemonitor.
 	// +optional
 	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
+	// Block duration for TSDB block
+	// +optional
+	BlockDuration string `json:"blockDuration,omitempty"`
+	// Block retention time on local disk
+	// +optional
+	Retention string `json:"retention,omitempty"`
 }
 
 type CompactSpec struct {
@@ -357,6 +366,9 @@ type CompactSpec struct {
 	// ServiceMonitor enables servicemonitor.
 	// +optional
 	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
+	// Time before a block marked for deletion is deleted from bucket
+	// +optional
+	DeleteDelay string `json:"deleteDelay,omitempty"`
 }
 
 type VolumeClaimTemplate struct {
