@@ -84,6 +84,14 @@ function(params) {
           '--store.caching-bucket.config=' + std.manifestYamlDoc(ts.config.bucketCache),
         ] else []
       ) + (
+        if std.length(ts.config.minTime) > 0 then [
+          '--min-time=' + ts.config.minTime,
+        ] else []
+      ) + (
+        if std.length(ts.config.maxTime) > 0 then [
+          '--max-time=' + ts.config.maxTime,
+        ] else []
+      ) + (
         if std.length(ts.config.tracing) > 0 then [
           '--tracing.config=' + std.manifestYamlDoc(
             { config+: { service_name: defaults.name } } + ts.config.tracing
@@ -95,6 +103,15 @@ function(params) {
           key: ts.config.objectStorageConfig.key,
           name: ts.config.objectStorageConfig.name,
         } } },
+        {
+          // Inject the host IP to make configuring tracing convenient.
+          name: 'HOST_IP_ADDRESS',
+          valueFrom: {
+            fieldRef: {
+              fieldPath: 'status.hostIP',
+            },
+          },
+        },
       ],
       ports: [
         { name: name, containerPort: ts.config.ports[name] }
