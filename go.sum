@@ -90,6 +90,8 @@ github.com/blang/semver v3.5.0+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnweb
 github.com/blang/semver v3.5.1+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnwebNt5EWlYSAyrTnjyyk=
 github.com/brancz/locutus v0.0.0-20210128123435-d14dd83a9c0b h1:J4x6jNOsyNDpxiPbdSFrPC+AzGjqtMKVsotQ3OJ7hLs=
 github.com/brancz/locutus v0.0.0-20210128123435-d14dd83a9c0b/go.mod h1:m6Yh1b4TXyTAuxU/LOkpl8bUl5LFAiTa+qr0AkfT0+E=
+github.com/brancz/locutus v0.0.0-20210421084121-0f02ffb439b6 h1:Nam40ne0XLOd7EkgvqTuRHnbtWeDq8JqM3TY63Z3lAY=
+github.com/brancz/locutus v0.0.0-20210421084121-0f02ffb439b6/go.mod h1:m6Yh1b4TXyTAuxU/LOkpl8bUl5LFAiTa+qr0AkfT0+E=
 github.com/casbin/casbin/v2 v2.1.2/go.mod h1:YcPU1XXisHhLzuxH9coDNf2FbKpjGlbCg3n9yuLkIJQ=
 github.com/cenkalti/backoff v2.2.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QHaoyV4aDUVVkXQJJJ3NXXM=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
