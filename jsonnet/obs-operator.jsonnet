@@ -36,18 +36,18 @@ local operatorObs = obs {
     stores+:: {
       local deleteDelay = if std.objectHas(cr.spec.thanos, 'compact') && std.objectHas(cr.spec.thanos.compact, 'deleteDelay') then cr.spec.thanos.compact.deleteDelay else obs.thanos.compact.config.deleteDelay,
       securityContext: if std.objectHas(cr.spec, 'securityContext') then cr.spec.securityContext else obs.thanos.stores.config.securityContext,
-      ignoreDeletionMarksDelay: std.parseInt(std.substr(deleteDelay, 0, std.length(deleteDelay)-1))/2 + std.substr(deleteDelay, std.length(deleteDelay)-1, std.length(deleteDelay)),
+      ignoreDeletionMarksDelay: std.parseInt(std.substr(deleteDelay, 0, std.length(deleteDelay) - 1)) / 2 + std.substr(deleteDelay, std.length(deleteDelay) - 1, std.length(deleteDelay)),
     } + if std.objectHas(cr.spec.thanos, 'store') then cr.spec.thanos.store else {},
 
     storeCache+:: (if std.objectHas(cr.spec.thanos, 'store') && std.objectHas(cr.spec.thanos.store, 'cache') then cr.spec.thanos.store.cache else {}) + {
       memoryLimitMb: if std.objectHas(cr.spec.thanos.store, 'cache') && std.objectHas(cr.spec.thanos.store.cache, 'memoryLimitMb') then cr.spec.thanos.store.cache.memoryLimitMb else obs.thanos.storeCache.config.memoryLimitMb,
       resources+: (
         if std.objectHas(cr.spec.thanos.store.cache, 'resources') then {
-          memcached: cr.spec.thanos.store.cache.resources
+          memcached: cr.spec.thanos.store.cache.resources,
         } else {}
       ) + (
         if std.objectHas(cr.spec.thanos.store.cache, 'exporterResources') then {
-          exporter: cr.spec.thanos.store.cache.exporterResources
+          exporter: cr.spec.thanos.store.cache.exporterResources,
         } else {}
       ),
       securityContext: if std.objectHas(cr.spec, 'securityContext') then cr.spec.securityContext else obs.thanos.storeCache.config.securityContext,
@@ -73,18 +73,18 @@ local operatorObs = obs {
         } else {}
       ),
       securityContext: if std.objectHas(cr.spec, 'securityContext') then cr.spec.securityContext else obs.thanos.queryFrontendCache.config.securityContext,
-    }
+    },
   }),
 
   loki:: if std.objectHas(cr.spec, 'loki') then loki(obs.loki.config {
-      local cfg = self,
-      name: cr.metadata.name + '-' + cfg.commonLabels['app.kubernetes.io/name'],
-      namespace: cr.metadata.namespace,
-      image: if std.objectHas(cr.spec.loki, 'image') then cr.spec.loki.image else obs.loki.config.image,
-      replicas: if std.objectHas(cr.spec.loki, 'replicas') then cr.spec.loki.replicas else obs.loki.config.replicas,
-      version: if std.objectHas(cr.spec.loki, 'version') then cr.spec.loki.version else obs.loki.config.version,
-      objectStorageConfig: if cr.spec.objectStorageConfig.loki != null then cr.spec.objectStorageConfig.loki else obs.loki.config.objectStorageConfig,
-    }) else {},
+    local cfg = self,
+    name: cr.metadata.name + '-' + cfg.commonLabels['app.kubernetes.io/name'],
+    namespace: cr.metadata.namespace,
+    image: if std.objectHas(cr.spec.loki, 'image') then cr.spec.loki.image else obs.loki.config.image,
+    replicas: if std.objectHas(cr.spec.loki, 'replicas') then cr.spec.loki.replicas else obs.loki.config.replicas,
+    version: if std.objectHas(cr.spec.loki, 'version') then cr.spec.loki.version else obs.loki.config.version,
+    objectStorageConfig: if cr.spec.objectStorageConfig.loki != null then cr.spec.objectStorageConfig.loki else obs.loki.config.objectStorageConfig,
+  }) else {},
 
   gubernator:: {},
 
@@ -151,14 +151,14 @@ local operatorObs = obs {
     ) + (
       if (v.kind == 'StatefulSet' || v.kind == 'Deployment') then {
         template+: {
-          spec+:{
+          spec+: {
             affinity: {
               podAntiAffinity: {
                 preferredDuringSchedulingIgnoredDuringExecution: [
                   {
                     podAffinityTerm: {
                       labelSelector: {
-                        matchExpressions:[
+                        matchExpressions: [
                           {
                             key: 'app.kubernetes.io/name',
                             operator: 'In',
@@ -175,14 +175,14 @@ local operatorObs = obs {
                           },
                         ],
                       },
-                      topologyKey: "kubernetes.io/hostname",
+                      topologyKey: 'kubernetes.io/hostname',
                     },
                     weight: 30,
                   },
                   {
                     podAffinityTerm: {
                       labelSelector: {
-                        matchExpressions:[
+                        matchExpressions: [
                           {
                             key: 'app.kubernetes.io/name',
                             operator: 'In',
@@ -199,7 +199,7 @@ local operatorObs = obs {
                           },
                         ],
                       },
-                      topologyKey: "topology.kubernetes.io/zone",
+                      topologyKey: 'topology.kubernetes.io/zone',
                     },
                     weight: 70,
                   },
@@ -220,7 +220,7 @@ local operatorObs = obs {
     ) + (
       if (std.objectHas(cr.spec, 'tolerations') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
         template+: {
-          spec+:{
+          spec+: {
             tolerations: cr.spec.tolerations,
           },
         },
@@ -228,7 +228,7 @@ local operatorObs = obs {
     ) + (
       if (std.objectHas(cr.spec.thanos.rule, 'reloaderResources') && (v.kind == 'StatefulSet') && v.metadata.name == obs.config.name + '-thanos-rule') then {
         template+: {
-          spec+:{
+          spec+: {
             containers: [
               if c.name == 'configmap-reloader' then c {
                 resources: cr.spec.thanos.rule.reloaderResources,
