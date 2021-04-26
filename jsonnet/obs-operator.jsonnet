@@ -65,11 +65,11 @@ local operatorObs = obs {
       memoryLimitMb: if std.objectHas(cr.spec.thanos.queryFrontend, 'cache') && std.objectHas(cr.spec.thanos.queryFrontend.cache, 'memoryLimitMb') then cr.spec.thanos.queryFrontend.cache.memoryLimitMb else obs.thanos.queryFrontendCache.config.memoryLimitMb,
       resources+: (
         if std.objectHas(cr.spec.thanos.queryFrontend.cache, 'resources') then {
-          memcached: cr.spec.thanos.queryFrontend.cache.resources
+          memcached: cr.spec.thanos.queryFrontend.cache.resources,
         } else {}
       ) + (
         if std.objectHas(cr.spec.thanos.queryFrontend.cache, 'exporterResources') then {
-          exporter: cr.spec.thanos.queryFrontend.cache.exporterResources
+          exporter: cr.spec.thanos.queryFrontend.cache.exporterResources,
         } else {}
       ),
       securityContext: if std.objectHas(cr.spec, 'securityContext') then cr.spec.securityContext else obs.thanos.queryFrontendCache.config.securityContext,

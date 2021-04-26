@@ -323,8 +323,8 @@ type RuleConfig struct {
 type VolumeMountType string
 
 var (
-	VolumeMountTypeConfigMap = "configMap"
-	VolumeMountTypeSecret    = "secret"
+	VolumeMountTypeConfigMap VolumeMountType = "configMap"
+	VolumeMountTypeSecret    VolumeMountType = "secret"
 )
 
 type VolumeMount struct {
