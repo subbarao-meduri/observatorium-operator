@@ -13,22 +13,21 @@
     {
       "source": {
         "git": {
-          "remote": "https://github.com/thanos-io/kube-thanos.git",
-          "subdir": "jsonnet/kube-thanos"
-        }
-      }, 
-      "version": "main",
-      "name": "upstream-kube-thanos"
-    },
-    {
-      "source": {
-        "git": {
           "remote": "https://github.com/open-cluster-management/kube-thanos.git",
           "subdir": "jsonnet/kube-thanos"
         }
       },
-      "version": "release-2.3",
-      "name": "kube-thanos"
+      "version": "release-2.3"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/thanos-io/kube-thanos.git",
+          "subdir": "jsonnet/kube-thanos"
+        }
+      },
+      "version": "main",
+      "name": "upstream-kube-thanos"
     }
   ],
   "legacyImports": true
