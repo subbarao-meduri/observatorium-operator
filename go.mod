@@ -1,6 +1,6 @@
 module github.com/open-cluster-management/observatorium-operator
 
-go 1.14
+go 1.16
 
 require (
 	github.com/brancz/locutus v0.0.0-20210421084121-0f02ffb439b6 
