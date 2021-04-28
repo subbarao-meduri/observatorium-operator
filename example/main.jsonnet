@@ -57,6 +57,14 @@ local dex = (import 'github.com/observatorium/deployments/components/dex.libsonn
       version: 'v0.18.0',
       queryFrontend: {
         replicas: obs.thanos.queryFrontend.config.replicas,
+        cache: {
+          image: obs.thanos.storeCache.config.image,
+          version: obs.thanos.storeCache.config.version,
+          exporterImage: obs.thanos.storeCache.config.exporterImage,
+          exporterVersion: obs.thanos.storeCache.config.exporterVersion,
+          replicas: obs.thanos.storeCache.config.replicas,
+          memoryLimitMb: obs.thanos.storeCache.config.memoryLimitMb,
+        },
       },
       store: {
         shards: obs.thanos.stores.config.shards,
