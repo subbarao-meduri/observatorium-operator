@@ -30,6 +30,7 @@ local operatorObs = obs {
 
     rule+:: {
       securityContext: if std.objectHas(cr.spec, 'securityContext') then cr.spec.securityContext else obs.thanos.rule.config.securityContext,
+      alertmanagersURLs: if std.objectHas(cr.spec.thanos, 'rule') && std.objectHas(cr.spec.thanos.rule, 'alertmanagerURLs') then cr.spec.thanos.rule.alertmanagerURLs else obs.thanos.rule.config.alertmanagersURLs,
     } + if std.objectHas(cr.spec.thanos, 'rule') then cr.spec.thanos.rule else {},
 
     stores+:: {
