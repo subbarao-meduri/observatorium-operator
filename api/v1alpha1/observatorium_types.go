@@ -141,7 +141,7 @@ type StoreSpec struct {
 	VolumeClaimTemplate VolumeClaimTemplate `json:"volumeClaimTemplate"`
 	Shards              *int32              `json:"shards,omitempty"`
 	// Memcached spec for Store
-	Cache StoreCacheSpec `json:"cache,omitempty"`
+	Cache MemCacheSpec `json:"cache,omitempty"`
 	// Compute Resources required by this container.
 	// +optional
 	Resources v1.ResourceRequirements `json:"resources,omitempty"`
@@ -150,8 +150,8 @@ type StoreSpec struct {
 	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
 }
 
-// StoreCacheSpec describes configuration for Store Memcached
-type StoreCacheSpec struct {
+// MemCacheSpec describes configuration for Store Memcached
+type MemCacheSpec struct {
 	// Memcached image
 	Image string `json:"image,omitempty"`
 	// Version of Memcached image to be deployed.
@@ -384,6 +384,8 @@ type QueryFrontendSpec struct {
 	// ServiceMonitor enables servicemonitor.
 	// +optional
 	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
+	// Memcached spec for QueryFrontend
+	Cache MemCacheSpec `json:"cache,omitempty"`
 }
 
 type Hashring struct {
