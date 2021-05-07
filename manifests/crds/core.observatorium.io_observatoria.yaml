@@ -1007,6 +1007,10 @@ spec:
                       cache:
                         description: Memcached spec for QueryFrontend
                         properties:
+                          connectionLimit:
+                            description: Max simultaneous connections
+                            format: int32
+                            type: integer
                           exporterImage:
                             description: Memcached Prometheus Exporter image
                             type: string
@@ -1037,6 +1041,9 @@ spec:
                             type: string
                           image:
                             description: Memcached image
+                            type: string
+                          maxItemSize:
+                            description: 'Max item size (default: 1m, min: 1k, max: 1024m)'
                             type: string
                           memoryLimitMb:
                             description: Memory limit of Memcached in megabytes.
@@ -1458,6 +1465,10 @@ spec:
                       cache:
                         description: Memcached spec for Store
                         properties:
+                          connectionLimit:
+                            description: Max simultaneous connections
+                            format: int32
+                            type: integer
                           exporterImage:
                             description: Memcached Prometheus Exporter image
                             type: string
@@ -1488,6 +1499,9 @@ spec:
                             type: string
                           image:
                             description: Memcached image
+                            type: string
+                          maxItemSize:
+                            description: 'Max item size (default: 1m, min: 1k, max: 1024m)'
                             type: string
                           memoryLimitMb:
                             description: Memory limit of Memcached in megabytes.

@@ -202,6 +202,11 @@ func (in *MemCacheSpec) DeepCopyInto(out *MemCacheSpec) {
 		*out = new(int32)
 		**out = **in
 	}
+	if in.ConnectionLimit != nil {
+		in, out := &in.ConnectionLimit, &out.ConnectionLimit
+		*out = new(int32)
+		**out = **in
+	}
 	in.Resources.DeepCopyInto(&out.Resources)
 	in.ExporterResources.DeepCopyInto(&out.ExporterResources)
 }
