@@ -164,6 +164,10 @@ type MemCacheSpec struct {
 	Replicas *int32 `json:"replicas,omitempty"`
 	// Memory limit of Memcached in megabytes.
 	MemoryLimitMB *int32 `json:"memoryLimitMb,omitempty"`
+	// Max item size (default: 1m, min: 1k, max: 1024m)
+	MaxItemSize string `json:"maxItemSize,omitempty"`
+	// Max simultaneous connections
+	ConnectionLimit *int32 `json:"connectionLimit,omitempty"`
 	// Compute Resources required by this container.
 	// +optional
 	Resources v1.ResourceRequirements `json:"resources,omitempty"`
