@@ -320,6 +320,31 @@ type RuleConfig struct {
 	Key string `json:"key"`
 }
 
+type VolumeMountType string
+
+var (
+	VolumeMountTypeConfigMap VolumeMountType = "configMap"
+	VolumeMountTypeSecret    VolumeMountType = "secret"
+)
+
+type VolumeMount struct {
+	// Voume mount type, configMap or secret
+	Type VolumeMountType `json:"type"`
+	// Volume mount path in the pod
+	MountPath string `json:"mountPath"`
+	// Resource name for the volume mount source
+	Name string `json:"name"`
+	// File name for the mount
+	Key string `json:"key"`
+}
+
+type AlertmanagerConfigFile struct {
+	// Alertmanager ConfigMap Name
+	Name string `json:"name"`
+	// Alertmanager ConfigMap key
+	Key string `json:"key"`
+}
+
 type RuleSpec struct {
 	// Number of Rule replicas.
 	Replicas *int32 `json:"replicas,omitempty"`
@@ -331,6 +356,12 @@ type RuleSpec struct {
 	// AlertmanagerURLs
 	// +optional
 	AlertmanagerURLs []string `json:"alertmanagerURLs,omitempty"`
+	// ExtraVolumeMounts
+	// +optional
+	ExtraVolumeMounts []VolumeMount `json:"extraVolumeMounts,omitempty"`
+	// AlertmanagerConfigFile
+	// +optional
+	AlertmanagerConfigFile AlertmanagerConfigFile `json:"alertmanagerConfigFile,omitempty"`
 	// ReloaderImage is an image of configmap reloader
 	// +optional
 	ReloaderImage string `json:"reloaderImage,omitempty"`
