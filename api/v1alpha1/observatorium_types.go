@@ -47,6 +47,9 @@ type ObservatoriumSpec struct {
 	// Security options the pod should run with.
 	// +optional
 	SecurityContext *v1.SecurityContext `json:"securityContext,omitempty"`
+	// Pull secret used to pull the images.
+	// +optional
+	PullSecret string `json:"pullSecret,omitempty"`
 }
 
 type ThanosSpec struct {
