@@ -238,6 +238,18 @@ local operatorObs = obs {
           },
         },
       } else {}
+    ) + (
+      if (std.objectHas(cr.spec, 'pullSecret') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
+        template+: {
+          spec+:{
+            imagePullSecrets: [
+              {
+                name: cr.spec.pullSecret,
+              },
+            ],
+          },
+        },
+      } else {}
     ),
   }, operatorObs.manifests),
 }
