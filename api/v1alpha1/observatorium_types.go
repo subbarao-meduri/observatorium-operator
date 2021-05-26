@@ -29,7 +29,7 @@ type ObservatoriumSpec struct {
 	// Hashrings describes a list of Hashrings
 	Hashrings []*Hashring `json:"hashrings"`
 	// Thanos Spec
-        // +optional
+	// +optional
 	Thanos ThanosSpec `json:"thanos"`
 	// API
 	API APISpec `json:"api,omitempty"`
