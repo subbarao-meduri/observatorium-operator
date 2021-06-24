@@ -6,9 +6,17 @@ local obs = (import 'github.com/observatorium/deployments/components/observatori
 
 local operatorObs = obs {
 
+  config+:: {
+    name: cr.metadata.name,
+    namespace: cr.metadata.namespace,
+  },
+
   thanos+:: thanos({
     name: cr.metadata.name,
     namespace: cr.metadata.namespace,
+    commonLabels+:: {
+      'app.kubernetes.io/part-of': 'observatorium',
+    },
     image: if std.objectHas(cr.spec.thanos, 'image') then cr.spec.thanos.image else obs.thanos.config.image,
     version: if std.objectHas(cr.spec.thanos, 'version') then cr.spec.thanos.version else obs.thanos.config.version,
     objectStorageConfig: cr.spec.objectStorageConfig.thanos,
@@ -94,6 +102,10 @@ local operatorObs = obs {
     local cfg = self,
     name: cr.metadata.name + '-' + cfg.commonLabels['app.kubernetes.io/name'],
     namespace: cr.metadata.namespace,
+    commonLabels+:: {
+      'app.kubernetes.io/instance': cr.metadata.name,
+      'app.kubernetes.io/version': if std.objectHas(cr.spec, 'api') && std.objectHas(cr.spec.api, 'version') then cr.spec.api.version else obs.api.config.version,
+    },
     tenants: if std.objectHas(cr.spec, 'api') && std.objectHas(cr.spec.api, 'tenants') then { tenants: cr.spec.api.tenants } else obs.api.config.tenants,
     rateLimiter: {},
     metrics: {
@@ -139,7 +151,22 @@ local operatorObs = obs {
         blockOwnerdeletion: true,
         controller: true,
       }],
-    },
+    } + (
+      if (v.kind == 'StatefulSet' && std.startsWith(v.metadata.name, cr.metadata.name + '-thanos-store-shard')) then {
+        local labels = v.metadata.labels,
+        labels: {
+          [labelName]: labels[labelName]
+          for labelName in std.objectFields(labels)
+          if !std.setMember(labelName, ['store.thanos.io/shard'])
+        } + {
+          'store.observatorium.io/shard':labels['store.thanos.io/shard'],
+        }
+      } else {}
+    ) + (
+      if (v.kind == 'StatefulSet' && std.startsWith(v.metadata.name, cr.metadata.name + '-thanos-query-frontend-memcached')) then {
+        name: 'observability-thanos-query-frontend-memcached',
+      } else {}
+    ),
     spec+: (
       if (std.objectHas(cr.spec, 'nodeSelector') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
         template+: {
@@ -210,6 +237,45 @@ local operatorObs = obs {
         },
       } else {}
     ) + (
+      if (v.kind == 'StatefulSet' && std.startsWith(v.metadata.name, cr.metadata.name + '-thanos-store-shard')) then {
+        local matchLabels = v.spec.selector.matchLabels,
+        local labels = v.spec.template.metadata.labels,
+        selector+: {
+          matchLabels: {
+            [labelName]: matchLabels[labelName]
+            for labelName in std.objectFields(matchLabels)
+            if !std.setMember(labelName, ['store.thanos.io/shard'])
+          } + {
+            'store.observatorium.io/shard': matchLabels['store.thanos.io/shard'],
+          },
+        },
+        template+: {
+          metadata+: {
+            labels: {
+              [labelName]: labels[labelName]
+              for labelName in std.objectFields(labels)
+              if !std.setMember(labelName, ['store.thanos.io/shard'])
+            } + {
+              'store.observatorium.io/shard': labels['store.thanos.io/shard'],
+            },
+          },
+        },
+        volumeClaimTemplates: [
+          vct {
+            metadata+:{
+              labels: {
+                [labelName]: matchLabels[labelName]
+                for labelName in std.objectFields(matchLabels)
+                if !std.setMember(labelName, ['store.thanos.io/shard'])
+              } + {
+                'store.observatorium.io/shard': matchLabels['store.thanos.io/shard'],
+              },
+            }
+          }
+          for vct in v.spec.volumeClaimTemplates
+        ]
+      } else {}
+    ) + (
       if (std.objectHas(cr.spec, 'affinity') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
         template+: {
           spec+: {
@@ -226,7 +292,7 @@ local operatorObs = obs {
         },
       } else {}
     ) + (
-      if (std.objectHas(cr.spec.thanos.rule, 'reloaderResources') && (v.kind == 'StatefulSet') && v.metadata.name == obs.config.name + '-thanos-rule') then {
+      if (std.objectHas(cr.spec.thanos.rule, 'reloaderResources') && (v.kind == 'StatefulSet') && v.metadata.name == cr.metadata.name + '-thanos-rule') then {
         template+: {
           spec+: {
             containers: [
