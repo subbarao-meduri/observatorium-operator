@@ -276,6 +276,27 @@ local operatorObs = obs {
         ]
       } else {}
     ) + (
+      if (std.objectHas(cr.spec, 'envVars') && (v.kind == 'StatefulSet' && (
+        std.startsWith(v.metadata.name, cr.metadata.name + '-thanos-compact') || 
+        std.startsWith(v.metadata.name, cr.metadata.name + '-thanos-receive') || 
+        std.startsWith(v.metadata.name, cr.metadata.name + '-thanos-rule') || 
+        std.startsWith(v.metadata.name, cr.metadata.name + '-thanos-store-shard')))) then {
+        template+: {
+          spec+: {
+            containers: [
+              if std.startsWith(c.name, 'thanos-') then c {
+                env+:
+                  [
+                    { name: envName, value: cr.spec.envVars[envName] }
+                    for envName in std.objectFields(cr.spec.envVars)
+                  ]
+              } else c
+              for c in super.containers
+            ],
+          },
+        },
+      } else {}
+    ) + (
       if (std.objectHas(cr.spec, 'affinity') && (v.kind == 'StatefulSet' || v.kind == 'Deployment')) then {
         template+: {
           spec+: {
