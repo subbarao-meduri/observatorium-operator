@@ -28,6 +28,10 @@ type ObservatoriumSpec struct {
 	ObjectStorageConfig ObjectStorageConfig `json:"objectStorageConfig"`
 	// Hashrings describes a list of Hashrings
 	Hashrings []*Hashring `json:"hashrings"`
+	// EnvVars define the common environment variables.
+	// EnvVars apply to thanos compact/receive/rule/store components
+	// +optional
+	EnvVars map[string]string `json:"envVars,omitempty"`
 	// Thanos Spec
 	// +optional
 	Thanos ThanosSpec `json:"thanos"`
