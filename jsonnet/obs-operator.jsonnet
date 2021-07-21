@@ -237,6 +237,17 @@ local operatorObs = obs {
         },
       } else {}
     ) + (
+      if (v.kind == 'Service' && std.startsWith(v.metadata.name, cr.metadata.name + '-thanos-store-shard')) then {
+        local selector = v.spec.selector,
+        selector: {
+            [labelName]: selector[labelName]
+            for labelName in std.objectFields(selector)
+            if !std.setMember(labelName, ['store.thanos.io/shard'])
+          } + {
+            'store.observatorium.io/shard': selector['store.thanos.io/shard'],
+        },
+      } else {}
+    ) + (
       if (v.kind == 'StatefulSet' && std.startsWith(v.metadata.name, cr.metadata.name + '-thanos-store-shard')) then {
         local matchLabels = v.spec.selector.matchLabels,
         local labels = v.spec.template.metadata.labels,
