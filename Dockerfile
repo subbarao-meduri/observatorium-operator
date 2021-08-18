@@ -11,7 +11,7 @@ COPY ./jsonnet/vendor/github.com/observatorium/deployments/components/ component
 WORKDIR /workspace/operator
 RUN GO111MODULE="on" go build github.com/brancz/locutus
 
-FROM alpine:3.10 as runner
+FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 
 WORKDIR /
 COPY --from=builder /workspace/operator/locutus /
