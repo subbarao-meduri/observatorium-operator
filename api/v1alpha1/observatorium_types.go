@@ -319,6 +319,9 @@ type QuerySpec struct {
 	// ServiceMonitor enables servicemonitor.
 	// +optional
 	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
+	// The maximum lookback duration for retrieving metrics during expression evaluations.
+	// +optional
+	LookbackDelta bool `json:"lookbackDelta,omitempty"`
 }
 
 type RuleConfig struct {

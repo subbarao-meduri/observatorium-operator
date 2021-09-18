@@ -348,6 +348,21 @@ local operatorObs = obs {
           },
         },
       } else {}
+    ) + (
+      if (std.objectHas(cr.spec.thanos.query, 'lookbackDelta') && (v.kind == 'Deployment') && v.metadata.name == cr.metadata.name + '-thanos-query') then {
+        template+: {
+          spec+: {
+            containers: [
+              if c.name == 'thanos-query' then c {
+                args+: [
+                  '--query.lookback-delta=' + cr.spec.thanos.query.lookbackDelta
+                ],
+              } else c
+              for c in super.containers
+            ],
+          },
+        },
+      } else {}
     ),
   }, operatorObs.manifests),
 }
