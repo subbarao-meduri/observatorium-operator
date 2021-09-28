@@ -10,8 +10,18 @@ OS_TYPE=$(echo `uname -s` | tr '[:upper:]' '[:lower:]')
 
 SED_CMD="${SED_CMD:-sed}"
 
-# OPERATOR_IMAGE_NAME can be set in the env to override calculated value
-OPERATOR_IMAGE_NAME="${OPERATOR_IMAGE_NAME:-quay.io/observatorium/observatorium-operator}"
+test_kind_prow() {
+
+    KEY="$SHARED_DIR/private.pem"
+    chmod 400 "$KEY"
+
+    IP="$(cat "$SHARED_DIR/public_ip")"
+    HOST="ec2-user@$IP"
+    OPT=(-q -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -i "$KEY")
+
+    scp "${OPT[@]}" -r ../observatorium-operator "$HOST:/tmp/observatorium-operator"
+    ssh "${OPT[@]}" "$HOST" "cd /tmp/observatorium-operator && ./tests/e2e.sh kind && ./tests/e2e.sh deploy-operator && ./tests/e2e.sh test --tls && ./tests/e2e.sh delete-cr" 2>&1 | tee $ARTIFACT_DIR/test.log
+}
 
 kind() {
     curl -LO https://storage.googleapis.com/kubernetes-release/release/"$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)"/bin/$OS_TYPE/amd64/kubectl
@@ -67,12 +77,10 @@ wait_for_cr() {
     fi
 }
 
-load_operator() {
+deploy_operator() {
     docker build -t quay.io/observatorium/observatorium-operator:latest .
     ./kind load docker-image quay.io/observatorium/observatorium-operator:latest
-}
 
-deploy_operator() {
     $KUBECTL apply -f https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/setup/prometheus-operator-0servicemonitorCustomResourceDefinition.yaml
     $KUBECTL apply -f https://raw.githubusercontent.com/coreos/kube-prometheus/master/manifests/setup/prometheus-operator-0prometheusruleCustomResourceDefinition.yaml
     $KUBECTL create ns observatorium-minio || true
@@ -86,8 +94,6 @@ deploy_operator() {
     $KUBECTL apply -n observatorium -f jsonnet/vendor/github.com/observatorium/deployments/tests/manifests/observatorium-xyz-tls-configmap.yaml
     $KUBECTL apply -n observatorium -f jsonnet/vendor/github.com/observatorium/deployments/tests/manifests/observatorium-xyz-tls-secret.yaml
     $KUBECTL apply -f manifests/crds
-    $SED_CMD -i "s,quay.io/observatorium/observatorium-operator:latest,$OPERATOR_IMAGE_NAME," manifests/operator.yaml
-    cat manifests/operator.yaml
     $KUBECTL apply -n default -f manifests/
     $KUBECTL apply -n observatorium -f example/manifests
     wait_for_cr observatorium-xyz
@@ -175,6 +181,10 @@ must_gather() {
 }
 
 case $1 in
+test-kind-prow)
+    test_kind_prow
+    ;;
+
 kind)
     kind
     ;;
