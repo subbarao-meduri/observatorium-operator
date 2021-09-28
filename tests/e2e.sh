@@ -180,6 +180,10 @@ must_gather() {
 }
 
 case $1 in
+test-kind-prow)
+    test_kind_prow
+    ;;
+
 kind)
     kind
     ;;
