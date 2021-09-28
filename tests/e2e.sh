@@ -9,6 +9,7 @@ KIND="${KIND:-./kind}"
 OS_TYPE=$(echo `uname -s` | tr '[:upper:]' '[:lower:]')
 
 SED_CMD="${SED_CMD:-sed}"
+echo "OPERATOR_IMAGE_NAME=$OPERATOR_IMAGE_NAME"
 
 # OPERATOR_IMAGE_NAME can be set in the env to override calculated value
 OPERATOR_IMAGE_NAME="${OPERATOR_IMAGE_NAME:-quay.io/observatorium/observatorium-operator}"
