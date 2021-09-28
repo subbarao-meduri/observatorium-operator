@@ -9,10 +9,6 @@ KIND="${KIND:-./kind}"
 OS_TYPE=$(echo `uname -s` | tr '[:upper:]' '[:lower:]')
 
 SED_CMD="${SED_CMD:-sed}"
-echo "OPERATOR_IMAGE_NAME=$OPERATOR_IMAGE_NAME"
-
-# OPERATOR_IMAGE_NAME can be set in the env to override calculated value
-OPERATOR_IMAGE_NAME="${OPERATOR_IMAGE_NAME:-quay.io/observatorium/observatorium-operator}"
 
 test_kind_prow() {
 
@@ -98,8 +94,6 @@ deploy_operator() {
     $KUBECTL apply -n observatorium -f jsonnet/vendor/github.com/observatorium/deployments/tests/manifests/observatorium-xyz-tls-configmap.yaml
     $KUBECTL apply -n observatorium -f jsonnet/vendor/github.com/observatorium/deployments/tests/manifests/observatorium-xyz-tls-secret.yaml
     $KUBECTL apply -f manifests/crds
-    $SED_CMD -i "s,quay.io/observatorium/observatorium-operator:latest,$OPERATOR_IMAGE_NAME," manifests/operator.yaml
-    cat manifests/operator.yaml
     $KUBECTL apply -n default -f manifests/
     $KUBECTL apply -n observatorium -f example/manifests
     wait_for_cr observatorium-xyz
