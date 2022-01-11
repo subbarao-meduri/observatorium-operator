@@ -1,14 +1,14 @@
 # Build the manager binary
-FROM registry.ci.openshift.org/open-cluster-management/builder:go1.17-linux AS builder
+FROM registry.ci.openshift.org/stolostron/builder:go1.17-linux AS builder
 
 WORKDIR /workspace
 # Copy the jsonnet source
 COPY . operator/
-COPY ./jsonnet/vendor/github.com/observatorium/deployments/components/ components/
+COPY ./jsonnet/vendor/github.com/observatorium/observatorium/configuration/components/ components/
 
 # Build
 WORKDIR /workspace/operator
-RUN GO111MODULE="on" go build github.com/brancz/locutus
+RUN GO111MODULE="on" CGO_ENABLED=0 go build github.com/brancz/locutus
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 
