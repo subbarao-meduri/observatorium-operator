@@ -308,6 +308,9 @@ type APISpec struct {
 	// ServiceMonitor enables servicemonitor.
 	// +optional
 	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
+	// AdditionalWriteEndpoint is the additional write endpoint besides the thanos one.
+	// +optional
+	AdditionalWriteEndpoint string `json:"additionalWriteEndpoint,omitempty"`
 }
 
 type QuerySpec struct {

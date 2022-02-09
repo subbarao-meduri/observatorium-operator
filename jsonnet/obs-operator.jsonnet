@@ -1,7 +1,7 @@
 local cr = import 'generic-operator/config';
 local thanos = (import 'github.com/observatorium/deployments/components/thanos.libsonnet');
 local loki = (import 'github.com/observatorium/deployments/components/loki.libsonnet');
-local api = (import 'github.com/observatorium/observatorium/jsonnet/lib/observatorium-api.libsonnet');
+local api = (import 'github.com/stolostron/observatorium/jsonnet/lib/observatorium-api.libsonnet');
 local obs = (import 'github.com/observatorium/deployments/components/observatorium.libsonnet');
 
 local operatorObs = obs {
@@ -108,7 +108,7 @@ local operatorObs = obs {
     },
     tenants: if std.objectHas(cr.spec, 'api') && std.objectHas(cr.spec.api, 'tenants') then { tenants: cr.spec.api.tenants } else obs.api.config.tenants,
     rateLimiter: {},
-    metrics: {
+    metrics+: {
       readEndpoint: 'http://%s.%s.svc.cluster.local:%d' % [
         operatorObs.thanos.queryFrontend.service.metadata.name,
         operatorObs.thanos.queryFrontend.service.metadata.namespace,
@@ -119,7 +119,11 @@ local operatorObs = obs {
         operatorObs.thanos.receiversService.metadata.namespace,
         operatorObs.thanos.receiversService.spec.ports[2].port,
       ],
-    },
+    } + (
+      if std.objectHas(cr.spec.api, 'additionalWriteEndpoint') then {
+        additionalWriteEndpoint: cr.spec.api["additionalWriteEndpoint"],
+      } else {}
+    ),
     logs: if std.objectHas(cr.spec, 'loki') then {
       readEndpoint: 'http://%s.%s.svc.cluster.local:%d' % [
         operatorObs.loki.manifests['query-frontend-http-service'].metadata.name,

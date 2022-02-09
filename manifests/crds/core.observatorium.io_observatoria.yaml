@@ -554,6 +554,9 @@ spec:
                   version:
                     description: Version describes the version of API to use.
                     type: string
+                  additionalWriteEndpoint:
+                    description: additional Write Endpoint besides the one to Thanos
+                    type: string
                 required:
                 - rbac
                 - tenants

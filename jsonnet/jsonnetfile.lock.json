@@ -20,7 +20,7 @@
       },
       "version": "d40a037f57ad6ff3b2fa4c62b3433340bba61a46",
       "sum": "Z86CgnoTybhpdQKWc2ptURmps1d9Qxhec0/IK6v71kY=",
-      "name": "observatorium"
+      "name": "upstream-observatorium"
     },
     {
       "source": {
@@ -53,6 +53,17 @@
       },
       "version": "ae9971c285449364854d0ad4aab8b8258e4b7638",
       "sum": "Ih4YDcFrAuARANPUzFBtxpTZb8on1dOeE9SseXWaLLU="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/stolostron/observatorium.git",
+          "subdir": "jsonnet/lib"
+        }
+      },
+      "version": "6cae988e7e84d5654a45eb558ecca4ebfd047501",
+      "sum": "IetrmhCGxCTkTQFSW6wrQvaDzqi8dl66sMU0S0Yxr+0=",
+      "name": "observatorium"
     },
     {
       "source": {

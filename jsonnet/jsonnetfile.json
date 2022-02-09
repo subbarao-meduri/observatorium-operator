@@ -28,6 +28,25 @@
       },
       "version": "main",
       "name": "upstream-kube-thanos"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/stolostron/observatorium.git",
+          "subdir": "jsonnet/lib"
+        }
+      },
+      "version": "v_fix",
+      "name": "observatorium"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/observatorium/observatorium.git",
+          "subdir": "jsonnet/lib"
+        }
+      },
+      "name": "upstream-observatorium"
     }
   ],
   "legacyImports": true
