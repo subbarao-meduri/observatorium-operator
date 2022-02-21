@@ -14,17 +14,6 @@
     {
       "source": {
         "git": {
-          "remote": "https://github.com/observatorium/observatorium.git",
-          "subdir": "jsonnet/lib"
-        }
-      },
-      "version": "d40a037f57ad6ff3b2fa4c62b3433340bba61a46",
-      "sum": "Z86CgnoTybhpdQKWc2ptURmps1d9Qxhec0/IK6v71kY=",
-      "name": "observatorium"
-    },
-    {
-      "source": {
-        "git": {
           "remote": "https://github.com/observatorium/thanos-receive-controller.git",
           "subdir": "jsonnet/lib"
         }
@@ -64,6 +53,17 @@
       "version": "f53ad9856c6f765989ea76ba8eff8dd1e77186b7",
       "sum": "1wMHM/+NvluUAxS5cBW2c6APEKQNQYLYnv1ZCE1R3/A=",
       "name": "upstream-kube-thanos"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/stolostron/observatorium.git",
+          "subdir": "jsonnet/lib"
+        }
+      },
+      "version": "443f2179e8ceeef5e05bd651975502a046b04e21",
+      "sum": "8V3CiaWr+rFSSj0WFyzK5iB13pPMgjVk9aHEG9DKePM=",
+      "name": "observatorium"
     }
   ],
   "legacyImports": false
