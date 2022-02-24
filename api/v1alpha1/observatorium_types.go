@@ -293,9 +293,9 @@ type TLS struct {
 type Endpoint struct {
 	URL string `json:"url"`
 	// +optional
-	TLSConfig EndpointTLSConfig `json:"tlsConfig,omitempty"`
+	TLSConfig *EndpointTLSConfig `json:"tlsConfig,omitempty"`
 	// +optional
-	BasicAuth EndpointBasicAuth `json:"basicAuth,omitempty"`
+	BasicAuth *EndpointBasicAuth `json:"basicAuth,omitempty"`
 }
 
 type EndpointTLSConfig struct {
