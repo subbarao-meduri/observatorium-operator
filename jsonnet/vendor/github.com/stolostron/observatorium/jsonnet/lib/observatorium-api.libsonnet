@@ -182,13 +182,13 @@ function(params) {
                         '--internal.tracing.service-name=' + api.config.internal.tracing.serviceName,
                       ]
                     else []
-                  ) + (
-                    if std.objectHas(api.config, 'additionalWriteEndpoints') then
-                      [
-                        '--metrics.additional.write.endpoint.config=/var/run/config/endpoints.yaml',
-                      ]
-                    else []
                   )
+                else []
+              ) + (
+                if std.objectHas(api.config, 'additionalWriteEndpoints') then
+                  [
+                    '--metrics.additional.write.endpoint.config=/var/run/config/endpoints.yaml',
+                  ]
                 else []
               ),
               ports: [
@@ -376,7 +376,8 @@ function(params) {
     },
   },
 
-  local e = [
+  local e = {
+    "endpoints": [
         {
           url: endpoint.url,
         } + 
@@ -394,7 +395,8 @@ function(params) {
           },
         } else {})
         for endpoint in api.config.additionalWriteEndpoints 
-      ],
+      ]
+  },
 
   endpoint_configmap: if std.objectHas(api.config, 'additionalWriteEndpoints') then {
     apiVersion: 'v1',
