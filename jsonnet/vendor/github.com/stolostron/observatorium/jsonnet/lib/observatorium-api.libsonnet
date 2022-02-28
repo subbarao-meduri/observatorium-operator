@@ -355,8 +355,8 @@ function(params) {
              ) else []) +
             (if std.objectHas(api.config, 'additionalWriteEndpoints') then [
                {
-                 configMap: {
-                   name: api.config.name + '-endpoint',
+                 secret: {
+                   secretName: api.config.name + '-endpoint',
                  },
                  name: 'endpoint-config',
                },
@@ -400,15 +400,16 @@ function(params) {
 
   endpoint_configmap: if std.objectHas(api.config, 'additionalWriteEndpoints') then {
     apiVersion: 'v1',
-    kind: 'ConfigMap',
+    kind: 'Secret',
     metadata: {
       labels: api.config.commonLabels,
       name: api.config.name + '-endpoint',
       namespace: api.config.namespace,
     },
-    data: {
+    stringData: {
       'endpoints.yaml': std.manifestYamlDoc(e),
     },
+    type: 'Opaque',
   } else null,
 
   configmap: if std.length(api.config.rbac) != 0 then {
