@@ -391,6 +391,8 @@ spec:
                           - password
                           - user
                           type: object
+                        name:
+                          type: string
                         tlsConfig:
                           properties:
                             caKey:
@@ -410,6 +412,7 @@ spec:
                         url:
                           type: string
                       required:
+                      - name
                       - url
                       type: object
                     type: array

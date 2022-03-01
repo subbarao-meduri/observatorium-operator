@@ -291,7 +291,8 @@ type TLS struct {
 
 // Endpoint contains the configuration for an endpoint
 type Endpoint struct {
-	URL string `json:"url"`
+	Name string `json:"name"`
+	URL  string `json:"url"`
 	// +optional
 	TLSConfig *EndpointTLSConfig `json:"tlsConfig,omitempty"`
 	// +optional
