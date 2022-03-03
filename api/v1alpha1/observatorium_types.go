@@ -319,7 +319,7 @@ type APISpec struct {
 	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
 	// AdditionalWriteEndpoints is a slice of additional write endpoint for the Observatorium API.
 	// +optional
-	AdditionalWriteEndpoints EndpointsConfig `json:"additionalWriteEndpoints,omitempty"`
+	AdditionalWriteEndpoints *EndpointsConfig `json:"additionalWriteEndpoints,omitempty"`
 }
 
 type QuerySpec struct {
