@@ -25,7 +25,6 @@ local defaults = {
   tls: {},
   rateLimiter: {},
   internal: {},
-  additionalWriteEndpoints: [],
 
   commonLabels:: {
     'app.kubernetes.io/name': 'observatorium-api',
