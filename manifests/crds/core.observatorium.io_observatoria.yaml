@@ -378,21 +378,18 @@ spec:
                 properties:
                   additionalWriteEndpoints:
                     description: AdditionalWriteEndpoints is a slice of additional write endpoint for the Observatorium API.
-                    items:
-                      description: Endpoint contains the configuration for an endpoint
-                      properties:
-                        endpointsConfigSecret:
-                          description: Secret name for the endpoints configuration
+                    properties:
+                      endpointsConfigSecret:
+                        description: Secret name for the endpoints configuration
+                        type: string
+                      mountSecrets:
+                        description: Secret list to be mounted
+                        items:
                           type: string
-                        mountSecrets:
-                          description: Secret list to be mounted
-                          items:
-                            type: string
-                          type: array
-                      required:
-                      - endpointsConfigSecret
-                      type: object
-                    type: array
+                        type: array
+                    required:
+                    - endpointsConfigSecret
+                    type: object
                   image:
                     description: API image
                     type: string

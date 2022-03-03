@@ -289,8 +289,8 @@ type TLS struct {
 	ReloadInterval string `json:"reloadInterval,omitempty"`
 }
 
-// Endpoint contains the configuration for an endpoint
-type Endpoint struct {
+// EndpointsConfig contains the configuration for all endpoints
+type EndpointsConfig struct {
 	// Secret name for the endpoints configuration
 	EndpointsConfigSecret string `json:"endpointsConfigSecret"`
 	// Secret list to be mounted
@@ -319,7 +319,7 @@ type APISpec struct {
 	ServiceMonitor bool `json:"serviceMonitor,omitempty"`
 	// AdditionalWriteEndpoints is a slice of additional write endpoint for the Observatorium API.
 	// +optional
-	AdditionalWriteEndpoints []Endpoint `json:"additionalWriteEndpoints,omitempty"`
+	AdditionalWriteEndpoints EndpointsConfig `json:"additionalWriteEndpoints,omitempty"`
 }
 
 type QuerySpec struct {
