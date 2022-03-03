@@ -280,10 +280,10 @@ function(params) {
                        readOnly: true,
                      },
                    ] + (
-                    if std.objectHas(api.configadditionalWriteEndpoints, 'mountSecrets') then [
+                    if std.objectHas(api.config.additionalWriteEndpoints, 'mountSecrets') then [
                       {
                         name: name,
-                        mountPath: '/var/run/certs/' + name,
+                        mountPath: '/var/run/secrets/' + name,
                         readOnly: true,
                       }
                       for name in api.config.additionalWriteEndpoints.mountSecrets
