@@ -381,39 +381,16 @@ spec:
                     items:
                       description: Endpoint contains the configuration for an endpoint
                       properties:
-                        basicAuth:
-                          properties:
-                            password:
-                              type: string
-                            user:
-                              type: string
-                          required:
-                          - password
-                          - user
-                          type: object
-                        name:
+                        endpointsConfigSecret:
+                          description: Secret name for the endpoints configuration
                           type: string
-                        tlsConfig:
-                          properties:
-                            caKey:
-                              type: string
-                            certKey:
-                              type: string
-                            keyKey:
-                              type: string
-                            secretName:
-                              type: string
-                          required:
-                          - caKey
-                          - certKey
-                          - keyKey
-                          - secretName
-                          type: object
-                        url:
-                          type: string
+                        mountSecrets:
+                          description: Secret list to be mounted
+                          items:
+                            type: string
+                          type: array
                       required:
-                      - name
-                      - url
+                      - endpointsConfigSecret
                       type: object
                     type: array
                   image:

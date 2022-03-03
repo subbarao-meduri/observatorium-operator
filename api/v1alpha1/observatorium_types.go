@@ -291,24 +291,11 @@ type TLS struct {
 
 // Endpoint contains the configuration for an endpoint
 type Endpoint struct {
-	Name string `json:"name"`
-	URL  string `json:"url"`
+	// Secret name for the endpoints configuration
+	EndpointsConfigSecret string `json:"endpointsConfigSecret"`
+	// Secret list to be mounted
 	// +optional
-	TLSConfig *EndpointTLSConfig `json:"tlsConfig,omitempty"`
-	// +optional
-	BasicAuth *EndpointBasicAuth `json:"basicAuth,omitempty"`
-}
-
-type EndpointTLSConfig struct {
-	SecretName string `json:"secretName"`
-	CAKey      string `json:"caKey"`
-	CertKey    string `json:"certKey"`
-	KeyKey     string `json:"keyKey"`
-}
-
-type EndpointBasicAuth struct {
-	User     string `json:"user"`
-	Password string `json:"password"`
+	MountSecrets []string `json:"mountSecrets,omitempty"`
 }
 
 type APISpec struct {
