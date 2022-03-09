@@ -296,6 +296,9 @@ type EndpointsConfig struct {
 	// Secret list to be mounted
 	// +optional
 	MountSecrets []string `json:"mountSecrets,omitempty"`
+	// Mount path for the secrets
+	// +optional
+	MountPath string `json:"mountPath,omitempty"`
 }
 
 type APISpec struct {
