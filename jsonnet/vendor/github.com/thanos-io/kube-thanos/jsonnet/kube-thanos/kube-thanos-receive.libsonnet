@@ -254,7 +254,7 @@ function(params) {
   },
 
   podDisruptionBudget: if tr.config.podDisruptionBudgetMaxUnavailable >= 1 then {
-    apiVersion: 'policy/v1beta1',
+    apiVersion: 'policy/v1',
     kind: 'PodDisruptionBudget',
     metadata: {
       name: tr.config.name,

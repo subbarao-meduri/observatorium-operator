@@ -232,6 +232,7 @@ function(params) {
     objectStorageConfig: thanos.config.objectStorageConfig,
     replicas: 1,
     logLevel: 'info',
+    maxItemSize: '1MiB',
     local memcachedDefaults = {
       timeout: '2s',
       max_idle_connections: 1000,
@@ -239,6 +240,7 @@ function(params) {
       max_async_buffer_size: 100000,
       max_get_multi_concurrency: 900,
       max_get_multi_batch_size: 1000,
+      max_item_size: thanos.config.stores.maxItemSize,
     },
     indexCache: {
       type: 'memcached',
@@ -292,15 +294,18 @@ function(params) {
     splitInterval: '24h',
     maxRetries: 0,
     logQueriesLongerThan: '5s',
+    maxItemSize: '1MiB',
     queryRangeCache: {
       type: 'memcached',
       config+: {
+        max_item_size: thanos.config.queryFrontend.maxItemSize,
         addresses: ['dnssrv+_client._tcp.%s.%s.svc' % [thanos.queryFrontendCache.service.metadata.name, thanos.queryFrontendCache.service.metadata.namespace]],
       },
     },
     labelsCache: {
       type: 'memcached',
       config+: {
+        max_item_size: thanos.config.queryFrontend.maxItemSize,
         addresses: ['dnssrv+_client._tcp.%s.%s.svc' % [thanos.queryFrontendCache.service.metadata.name, thanos.queryFrontendCache.service.metadata.namespace]],
       },
     },
