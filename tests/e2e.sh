@@ -23,7 +23,7 @@ test_kind_prow() {
     OPT=(-q -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -i "$KEY")
     
     scp "${OPT[@]}" -r ../observatorium-operator "$HOST:/tmp/observatorium-operator"
-    ssh "${OPT[@]}" "$HOST" "cd /tmp/observatorium-operator && ./tests/e2e.sh kind && ./tests/e2e.sh deploy-operator && ./tests/e2e.sh test --tls && ./tests/e2e.sh delete-cr" 2>&1 | tee $ARTIFACT_DIR/test.log
+    ssh "${OPT[@]}" "$HOST" "cd /tmp/observatorium-operator && bash -x ./tests/e2e.sh kind && bash -x ./tests/e2e.sh deploy-operator && bash -x ./tests/e2e.sh test --tls && ./tests/e2e.sh delete-cr" 2>&1 | tee $ARTIFACT_DIR/test.log
 }
 
 kind() {
@@ -164,24 +164,45 @@ must_gather() {
 
         for name in $($KUBECTL get pods -n "$namespace" -o jsonpath='{.items[*].metadata.name}') ; do
             $KUBECTL -n "$namespace" describe pod "$name" > "$artifact_dir/$namespace/$name.describe"
+            echo "--- $artifact_dir/$namespace/$name.describe ---"
+            cat "$artifact_dir/$namespace/$name.describe"
+
             $KUBECTL -n "$namespace" get pod "$name" -o yaml > "$artifact_dir/$namespace/$name.yaml"
+            echo "--- $artifact_dir/$namespace/$name.yaml ---"
+            cat "$artifact_dir/$namespace/$name.yaml"
 
             for initContainer in $($KUBECTL -n "$namespace" get po "$name" -o jsonpath='{.spec.initContainers[*].name}') ; do
                 $KUBECTL -n "$namespace" logs "$name" -c "$initContainer" > "$artifact_dir/$namespace/$name-$initContainer.logs"
+                echo "--- $artifact_dir/$namespace/$name-$initContainer.logs ---"
+                cat "$artifact_dir/$namespace/$name-$initContainer.logs"
             done
 
             for container in $($KUBECTL -n "$namespace" get po "$name" -o jsonpath='{.spec.containers[*].name}') ; do
                 $KUBECTL -n "$namespace" logs "$name" -c "$container" > "$artifact_dir/$namespace/$name-$container.logs"
+                echo "--- $artifact_dir/$namespace/$name-$container.logs ---"
+                cat "$artifact_dir/$namespace/$name-$container.logs"
             done
         done
     done
 
     $KUBECTL describe nodes > "$artifact_dir/nodes"
+    echo "--- $artifact_dir/nodes ---"
+    cat "$artifact_dir/nodes"
     $KUBECTL get pods --all-namespaces > "$artifact_dir/pods"
+    echo "--- $artifact_dir/pods ---"
+    cat "$artifact_dir/pods"
     $KUBECTL get deploy --all-namespaces > "$artifact_dir/deployments"
+    echo "--- $artifact_dir/deployments ---"
+    cat "$artifact_dir/deployments"
     $KUBECTL get statefulset --all-namespaces > "$artifact_dir/statefulsets"
+    echo "--- $artifact_dir/statefulsets ---"
+    cat "$artifact_dir/statefulsets"
     $KUBECTL get services --all-namespaces > "$artifact_dir/services"
+    echo "--- $artifact_dir/services ---"
+    cat "$artifact_dir/services"
     $KUBECTL get endpoints --all-namespaces > "$artifact_dir/endpoints"
+    echo "--- $artifact_dir/endpoints ---"
+    cat "$artifact_dir/endpoints"
 }
 
 case $1 in
