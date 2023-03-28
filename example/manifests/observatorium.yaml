@@ -91,7 +91,7 @@ spec:
           resources:
             requests:
               storage: 50Gi
-    image: quay.io/thanos/thanos:v0.18.0
+    image: quay.io/thanos/thanos:v0.29.0
     query:
       replicas: 1
     queryFrontend:
@@ -137,4 +137,4 @@ spec:
           resources:
             requests:
               storage: 50Gi
-    version: v0.18.0
+    version: v0.29.0

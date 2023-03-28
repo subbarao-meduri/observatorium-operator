@@ -127,7 +127,7 @@ delete_cr() {
     intervals=600
     while [ $interval -ne $intervals ]; do
       echo "Waiting for cleaning"
-      count=$($KUBECTL -n observatorium get all | wc -l)
+      count=$($KUBECTL -n observatorium get all --no-headers| wc -l)
       if [ "$count" = "$target_count" ]; then
         echo NS count is now: $count
 	    timeout=$false
