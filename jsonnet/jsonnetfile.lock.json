@@ -4,6 +4,96 @@
     {
       "source": {
         "git": {
+          "remote": "https://github.com/brancz/kubernetes-grafana.git",
+          "subdir": "grafana"
+        }
+      },
+      "version": "d039275e4916aceae1c137120882e01d857787ac",
+      "sum": "515vMn4x4tP8vegL4HLW0nDO5+njGTgnDZB5OOhtsCI="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/etcd-io/etcd.git",
+          "subdir": "contrib/mixin"
+        }
+      },
+      "version": "5223d09d4109b29e5b51e3a809c333adfb110670",
+      "sum": "QTzBqwjnM6cGGVBhOiVJyA+ZVTkmCTuH6C6YW7XKRFw="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/grafana/grafana.git",
+          "subdir": "grafana-mixin"
+        }
+      },
+      "version": "1120f9e255760a3c104b57871fcb91801e934382",
+      "sum": "MkjR7zCgq6MUZgjDzop574tFKoTX2OBr7DTwm1K+Ofs="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/grafana/grafonnet-lib.git",
+          "subdir": "grafonnet"
+        }
+      },
+      "version": "30280196507e0fe6fa978a3e0eaca3a62844f817",
+      "sum": "342u++/7rViR/zj2jeJOjshzglkZ1SY+hFNuyCBFMdc="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/grafana/grafonnet-lib.git",
+          "subdir": "grafonnet-7.0"
+        }
+      },
+      "version": "30280196507e0fe6fa978a3e0eaca3a62844f817",
+      "sum": "gCtR9s/4D5fxU9aKXg0Bru+/njZhA0YjLjPiASc61FM="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/grafana/jsonnet-libs.git",
+          "subdir": "grafana-builder"
+        }
+      },
+      "version": "c31b164f453738582defd06feea3a139732b6faf",
+      "sum": "tDR6yT2GVfw0wTU12iZH+m01HrbIr6g/xN+/8nzNkU0="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/kubernetes-monitoring/kubernetes-mixin.git",
+          "subdir": ""
+        }
+      },
+      "version": "eed459199703c969afc318ea55b9361ae48180a7",
+      "sum": "iKDOR7+jXw3Rctog6Z1ofweIK5BLjuGeguIZjXLP8ls="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/kubernetes/kube-state-metrics.git",
+          "subdir": "jsonnet/kube-state-metrics"
+        }
+      },
+      "version": "fa940a8b7f95294c252912f31b8cbd7b10132129",
+      "sum": "igweIVljby6UPCBABsmJq+tf8ncgEL+K6qPN38z33I4="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/kubernetes/kube-state-metrics.git",
+          "subdir": "jsonnet/kube-state-metrics-mixin"
+        }
+      },
+      "version": "fa940a8b7f95294c252912f31b8cbd7b10132129",
+      "sum": "u8gaydJoxEjzizQ8jY8xSjYgWooPmxw+wIWdDxifMAk="
+    },
+    {
+      "source": {
+        "git": {
           "remote": "https://github.com/observatorium/api.git",
           "subdir": "jsonnet/lib"
         }
@@ -36,6 +126,17 @@
     {
       "source": {
         "git": {
+          "remote": "https://github.com/observatorium/token-refresher.git",
+          "subdir": "jsonnet/lib"
+        }
+      },
+      "version": "a99ce8288a195829a35dfb10399f538612ff2f4c",
+      "sum": "c+ywXdmRYJpWnCzAh85n4AWMcxj+sqx5rNHb3lzYuEY=",
+      "name": "token-refresher"
+    },
+    {
+      "source": {
+        "git": {
           "remote": "https://github.com/observatorium/up.git",
           "subdir": "jsonnet"
         }
@@ -47,12 +148,96 @@
     {
       "source": {
         "git": {
+          "remote": "https://github.com/prometheus-operator/kube-prometheus.git",
+          "subdir": "jsonnet/kube-prometheus"
+        }
+      },
+      "version": "c984288cc339fa0454dce05fcf1d6b95875a7073",
+      "sum": "pHnu5zlOLKrr4d2IqREGb2gpXfl79eK+1rGoqFxLISA="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/prometheus-operator/prometheus-operator.git",
+          "subdir": "jsonnet/mixin"
+        }
+      },
+      "version": "7b3935ffad3d946f8ec29561a3066dc9f05848aa",
+      "sum": "GQmaVFJwKMiD/P4n3N2LrAZVcwutriWrP8joclDtBYQ=",
+      "name": "prometheus-operator-mixin"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/prometheus-operator/prometheus-operator.git",
+          "subdir": "jsonnet/prometheus-operator"
+        }
+      },
+      "version": "7b3935ffad3d946f8ec29561a3066dc9f05848aa",
+      "sum": "uQkAw8GU6o3eX57ol+JOHGYwGZU5XGrIVMIHwMFfRyw="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/prometheus/alertmanager.git",
+          "subdir": "doc/alertmanager-mixin"
+        }
+      },
+      "version": "747430cd42e1aad5a5f0a25737e9a398b0ef371e",
+      "sum": "PsK+V7oETCPKu2gLoPfqY0wwPKH9TzhNj6o2xezjjXc=",
+      "name": "alertmanager"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/prometheus/node_exporter.git",
+          "subdir": "docs/node-mixin"
+        }
+      },
+      "version": "6a42c0b0a82caa3bf9526bc80d86f8f5550bf84e",
+      "sum": "TwdaTm0Z++diiLyaKAAimmC6hBL7XbrJc0RHhBCpAdU="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/prometheus/prometheus.git",
+          "subdir": "documentation/prometheus-mixin"
+        }
+      },
+      "version": "211ae4f1f0a2cdaae09c4c52735f75345c1817c6",
+      "sum": "LRx0tbMnoE1p8KEn+i81j2YsA5Sgt3itE5Y6jBf5eOQ=",
+      "name": "prometheus"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/pyrra-dev/pyrra.git",
+          "subdir": "config/crd/bases"
+        }
+      },
+      "version": "ce95654af917d6fba1d91bc15eb7b1c4545c0297",
+      "sum": "bY/Pcrrbynguq8/HaI88cQ3B2hLv/xc+76QILY7IL+g="
+    },
+    {
+      "source": {
+        "git": {
           "remote": "https://github.com/stolostron/kube-thanos.git",
           "subdir": "jsonnet/kube-thanos"
         }
       },
-      "version": "55d79c62ffbf39c7a8f5973e5bf6421944b3aea6",
-      "sum": "K3y2JG3FCgXv3zuiaUl2BIfwODpahnb9wphykDreoyI="
+      "version": "6a7455882cf45acfe96768d682bf5d714669c02c",
+      "sum": "Lmo908G1ILvI/a2Y4rsrOi7NmxJeelUS3SlrklrdfWc="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/stolostron/observatorium-deployment.git",
+          "subdir": "configuration"
+        }
+      },
+      "version": "2e10c4dfe7c83858697d6c869cc765ade4eee76d",
+      "sum": "CqGZIkvUB13xk3q/eBdz3xWFi5WlBJmHZVPIPKV3A4I=",
+      "name": "stolo-configuration"
     },
     {
       "source": {
@@ -74,6 +259,17 @@
       "version": "6328583a623765ed6ebf18064a301104def57420",
       "sum": "9XtRX02CoqEIb2BHJ0nDhuV6VvncFBanwQRFd60qYGg=",
       "name": "upstream-kube-thanos"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/thanos-io/thanos.git",
+          "subdir": "mixin"
+        }
+      },
+      "version": "2165d8cd7392f3231f9cb81bbb2a6ed65584e275",
+      "sum": "U83c7tJSrhSWAr4c6TsY4FXN1OoiW0zF751bg1W5ydE=",
+      "name": "thanos-mixin"
     }
   ],
   "legacyImports": false
