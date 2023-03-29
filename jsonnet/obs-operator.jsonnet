@@ -1,6 +1,6 @@
 local cr = import 'generic-operator/config';
 local thanos = (import 'stolo-configuration/components/thanos.libsonnet');
-local loki = (import 'stolo-configuration/components/loki.libsonnet');
+local loki = (import 'github.com/observatorium/observatorium/configuration/components/loki.libsonnet');
 local api = (import 'lib/observatorium-api.libsonnet');
 local obs = (import 'stolo-configuration/components/observatorium.libsonnet');
 
