@@ -95,7 +95,10 @@ deploy_operator() {
     else
         docker pull $OPERATOR_IMAGE_NAME
         IMAGE_ID=${OPERATOR_IMAGE_NAME%%@*}
+<<<<<<< HEAD
         IMAGE_ID=${IMAGE_ID%%:*}
+=======
+>>>>>>> release-2.5
         docker tag $OPERATOR_IMAGE_NAME $IMAGE_ID:test
         ./kind load docker-image $IMAGE_ID:test
         OPERATOR_IMAGE_NAME=$IMAGE_ID:test
