@@ -77,6 +77,7 @@ function(params) {
         '--log.level=' + ts.config.logLevel,
         '--log.format=' + ts.config.logFormat,
         '--data-dir=/var/thanos/store',
+        '--no-cache-index-header',
         '--grpc-address=0.0.0.0:%d' % ts.config.ports.grpc,
         '--http-address=0.0.0.0:%d' % ts.config.ports.http,
         '--objstore.config=$(OBJSTORE_CONFIG)',

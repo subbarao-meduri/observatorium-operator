@@ -211,12 +211,12 @@
     {
       "source": {
         "git": {
-          "remote": "https://github.com/thanos-io/kube-thanos.git",
+          "remote": "https://github.com/stolostron/kube-thanos.git",
           "subdir": "jsonnet/kube-thanos"
         }
       },
-      "version": "6328583a623765ed6ebf18064a301104def57420",
-      "sum": "9XtRX02CoqEIb2BHJ0nDhuV6VvncFBanwQRFd60qYGg="
+      "version": "4f3339a9dd61c05837e7a4c8a89eace263272b48",
+      "sum": "/LU5RYcsaj39c4mfhIjVyuNjr/IKzxMRktwjDAR9o80="
     },
     {
       "source": {

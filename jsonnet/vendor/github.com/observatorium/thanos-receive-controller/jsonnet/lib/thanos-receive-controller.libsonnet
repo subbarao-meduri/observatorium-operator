@@ -12,6 +12,9 @@ local defaults = {
   hashrings: error 'must provide hashring configuration',
   resources: {},
   serviceMonitor: false,
+  annotatePodsOnChange: false,
+  allowOnlyReadyReplicas: false,
+  allowDynamicScaling: false,
   ports: { http: 8080 },
   clusterDomain: '',
 
@@ -69,7 +72,12 @@ function(params) {
       {
         apiGroups: [''],
         resources: ['configmaps'],
-        verbs: ['list', 'watch', 'get', 'create', 'update'],
+        verbs: ['list', 'watch', 'get', 'create', 'update', 'delete'],
+      },
+      {
+        apiGroups: [''],
+        resources: ['pods'],
+        verbs: ['get', 'update'],
       },
       {
         apiGroups: ['apps'],
@@ -141,16 +149,31 @@ function(params) {
       image: trc.config.image,
       imagePullPolicy: trc.config.imagePullPolicy,
       args: [
-        '--configmap-name=%s' % trc.configmap.metadata.name,
-        '--configmap-generated-name=%s-generated' % trc.configmap.metadata.name,
-        '--file-name=hashrings.json',
-        '--namespace=$(NAMESPACE)',
-      ] +
-      (
-        if std.length(trc.config.clusterDomain) > 0 then [
-          '--cluster-domain=%s' % trc.config.clusterDomain,
-        ] else []
-      ),
+              '--configmap-name=%s' % trc.configmap.metadata.name,
+              '--configmap-generated-name=%s-generated' % trc.configmap.metadata.name,
+              '--file-name=hashrings.json',
+              '--namespace=$(NAMESPACE)',
+            ] +
+            (
+              if std.length(trc.config.clusterDomain) > 0 then [
+                '--cluster-domain=%s' % trc.config.clusterDomain,
+              ] else []
+            ) +
+            (
+              if trc.config.annotatePodsOnChange == true then [
+                '--annotate-pods-on-change',
+              ] else []
+            ) +
+            (
+              if trc.config.allowOnlyReadyReplicas == true then [
+                '--allow-only-ready-replicas',
+              ] else []
+            ) +
+            (
+              if trc.config.allowDynamicScaling == true then [
+                '--allow-dynamic-scaling',
+              ] else []
+            ),
       env: [
         { name: 'NAMESPACE', valueFrom: { fieldRef: { fieldPath: 'metadata.namespace' } } },
       ],

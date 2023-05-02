@@ -4,40 +4,12 @@
     {
       "source": {
         "git": {
-          "remote": "https://github.com/observatorium/observatorium.git",
-          "subdir": "configuration"
-        }
-      },
-      "version": "main"
-    },
-    {
-      "source": {
-        "git": {
           "remote": "https://github.com/stolostron/observatorium-deployment.git",
           "subdir": "configuration"
         }
       },
-      "version": "main",
+      "version": "release-2.8",
       "name": "stolo-configuration"
-    },
-    {
-      "source": {
-        "git": {
-          "remote": "https://github.com/stolostron/kube-thanos.git",
-          "subdir": "jsonnet/kube-thanos"
-        }
-      },
-      "version": "main"
-    },
-    {
-      "source": {
-        "git": {
-          "remote": "https://github.com/thanos-io/kube-thanos.git",
-          "subdir": "jsonnet/kube-thanos"
-        }
-      },
-      "version": "main",
-      "name": "upstream-kube-thanos"
     },
     {
       "source": {
