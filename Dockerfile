@@ -14,7 +14,7 @@ RUN cd locutus; GO111MODULE="on" CGO_ENABLED=0 go build
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 
 WORKDIR /
-COPY --from=builder /workspace/operator/locutus /
+COPY --from=builder /workspace/operator/locutus/locutus /locutus
 COPY --from=builder /workspace/operator/jsonnet /
 COPY --from=builder /workspace/components/ /components/
 COPY --from=builder /workspace/operator/jsonnet/vendor/ /vendor/
