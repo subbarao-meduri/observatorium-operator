@@ -7,9 +7,10 @@ COPY . operator/
 COPY ./jsonnet/vendor/stolo-configuration/components/ components/
 
 # Build
-WORKDIR /workspace/operator
-RUN git clone https://github.com/stolostron/locutus --branch release-2.8
-RUN cd locutus; GO111MODULE="on" CGO_ENABLED=1 go build
+ADD https://github.com/stolostron/locutus/archive/935e4a75faa0bc840b9ef836a56789c3bb9eba2a.tar.gz /workspace/operator/locutus.tar.gz
+WORKDIR /workspace/operator/locutus
+RUN tar -xf /workspace/operator/locutus.tar.gz -C . --strip-components=1
+RUN GO111MODULE="on" CGO_ENABLED=1 go build
 
 FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
 
