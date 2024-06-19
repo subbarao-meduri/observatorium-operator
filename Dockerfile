@@ -1,5 +1,5 @@
 # Build the manager binary
-FROM registry.ci.openshift.org/stolostron/builder:go1.20-linux AS builder
+FROM registry.ci.openshift.org/stolostron/builder:go1.21-linux AS builder
 
 WORKDIR /workspace
 # Copy the jsonnet source
@@ -12,7 +12,7 @@ WORKDIR /workspace/operator/locutus
 RUN tar -xf /workspace/operator/locutus.tar.gz -C . --strip-components=1
 RUN GO111MODULE="on" CGO_ENABLED=1 go build
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 
 WORKDIR /
 COPY --from=builder /workspace/operator/locutus/locutus /locutus
