@@ -31,6 +31,7 @@
               if c.name == 'thanos-compact' then c {
                 args+: [
                   '--debug.max-compaction-level=3',
+                  '--block-discovery-strategy=recursive',
                 ],
               }
               else c
@@ -40,5 +41,26 @@
         },
       },
     },
+  },
+  stores+:: {
+    shards:
+      std.mapWithKey(function(shard, obj) obj {  // loops over each [shard-n]:obj
+        statefulSet+: {
+          spec+: {
+            template+: {
+              spec+: {
+                containers: [
+                  if c.name == 'thanos-store' then c {
+                    args+: [
+                      '--block-discovery-strategy="recursive"',
+                    ],
+                  } else c
+                  for c in super.containers
+                ],
+              },
+            },
+          },
+        },
+      }, super.shards),
   },
 }
